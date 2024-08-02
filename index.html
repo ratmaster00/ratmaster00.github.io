@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gosig Rätta Converter</title>
+    <title>Currency Converter</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+        *{
+            font-family: "Space Mono", monospace;
+            font-weight: 400;
+            font-style: normal;
+        }
         body {
-            font-family: Arial, sans-serif;
             background-color: #f0f0f0;
         }
         .converter {
@@ -81,7 +87,7 @@
 <body>
 
 <div class="converter">
-    <h2>RAT Converter</h2>
+    <h2>Currency Converter</h2>
     <input type="number" id="amount" placeholder="Enter amount">
     <select id="fromCurrency">
         <option id="fromOption" value="RAT">RAT</option>
