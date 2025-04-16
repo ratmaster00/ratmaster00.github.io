@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Tetris volume slider</title>
+    <title>Tetris Volume Meter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -31,22 +31,46 @@
             background-color: #111;
             margin-bottom: 20px;
         }
-        #score-display {
+        #volume-display {
             font-size: 24px;
             padding: 10px;
             background-color: #333;
             color: white;
             border-radius: 5px;
             width: 120px;
+            margin-bottom: 10px;
+        }
+        #volume-slider {
+            width: 120px;
+            height: 30px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #4CAF50;
+            outline: none;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            pointer-events: none; /* Makes slider non-interactive */
+        }
+        #volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 30px;
+            height: 30px;
+            background: #2E7D32;
+            cursor: pointer;
+            border-radius: 50%;
         }
         .controls {
             margin-top: 20px;
             font-size: 18px;
         }
+        .ghost {
+            opacity: 0.3;
+        }
     </style>
 </head>
 <body>
-    <h1>Tetris Volume slider</h1>
+    <h1>Tetris Volume Meter</h1>
     <div id="game-container">
         <canvas id="tetris-board" width="300" height="600"></canvas>
         <div id="side-panel">
@@ -54,11 +78,12 @@
                 <h3>Next Piece:</h3>
                 <canvas id="next-piece" width="120" height="120"></canvas>
             </div>
-            <div id="score-display">Score: 0</div>
+            <div id="volume-display">Volume: 0%</div>
+            <input type="range" id="volume-slider" min="0" max="100" value="0">
         </div>
     </div>
     <div class="controls">
-        <p>Controls: Arrow keys to move, Up to rotate, Space to drop. Every line cleared is 1% of volume. </p>
+        <p>Controls: Arrow keys to move, Up to rotate, Space to drop. Each line cleared increases volume by 1%.</p>
     </div>
 
     <script>
@@ -73,7 +98,9 @@
         const ctx = canvas.getContext('2d');
         const nextCanvas = document.getElementById('next-piece');
         const nextCtx = nextCanvas.getContext('2d');
-        let score = 0;
+        const volumeSlider = document.getElementById('volume-slider');
+        const volumeDisplay = document.getElementById('volume-display');
+        let volume = 0;
         let gameOver = false;
         
         // Game board
@@ -94,7 +121,7 @@
         let piece = null;
         let nextPiece = null;
         let piecePos = { x: 0, y: 0 };
-        
+
         // Initialize the game
         function init() {
             // Set canvas size explicitly
@@ -139,6 +166,13 @@
                 draw();
             });
         }
+
+        // Update volume display
+        function updateVolumeDisplay() {
+            volume = Math.min(100, volume); // Cap at 100%
+            volumeDisplay.textContent = `Volume: ${volume}%`;
+            volumeSlider.value = volume;
+        }
         
         // Create a new random piece
         function createNewPiece() {
@@ -149,7 +183,7 @@
             // Check if game over (new piece collides immediately)
             if (collision()) {
                 gameOver = true;
-                alert(`Game Over! Your score: ${score}`);
+                alert(`Game Over! Final Volume: ${volume}%`);
                 document.location.reload();
             }
             
@@ -191,6 +225,9 @@
             // Draw the board
             drawBoard();
             
+            // Draw ghost piece (where current piece will land)
+            drawGhostPiece();
+            
             // Draw the current piece
             drawPiece();
         }
@@ -207,6 +244,68 @@
                     }
                 });
             });
+        }
+
+        // Draw ghost piece (shows where current piece will land)
+        function drawGhostPiece() {
+            const ghostY = calculateGhostY();
+            
+            ctx.save();
+            ctx.globalAlpha = 0.3; // Make ghost piece semi-transparent
+            
+            piece.shape.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value) {
+                        ctx.fillStyle = piece.color;
+                        ctx.fillRect(
+                            (piecePos.x + x) * BLOCK_SIZE,
+                            (ghostY + y) * BLOCK_SIZE,
+                            BLOCK_SIZE,
+                            BLOCK_SIZE
+                        );
+                        ctx.strokeStyle = '#000';
+                        ctx.strokeRect(
+                            (piecePos.x + x) * BLOCK_SIZE,
+                            (ghostY + y) * BLOCK_SIZE,
+                            BLOCK_SIZE,
+                            BLOCK_SIZE
+                        );
+                    }
+                });
+            });
+            
+            ctx.restore();
+        }
+
+        // Calculate where the piece would land
+        function calculateGhostY() {
+            let ghostY = piecePos.y;
+            while (!collisionAtPosition(piecePos.x, ghostY + 1)) {
+                ghostY++;
+            }
+            return ghostY;
+        }
+
+        // Check collision at specific position
+        function collisionAtPosition(testX, testY) {
+            for (let y = 0; y < piece.shape.length; y++) {
+                for (let x = 0; x < piece.shape[y].length; x++) {
+                    if (!piece.shape[y][x]) continue;
+                    
+                    const newX = testX + x;
+                    const newY = testY + y;
+                    
+                    if (
+                        newX < 0 || 
+                        newX >= COLS || 
+                        newY >= ROWS ||
+                        (newY >= 0 && board[newY][newX])
+                    ) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         
         // Draw the current piece
@@ -297,24 +396,7 @@
         
         // Check for collision
         function collision() {
-            for (let y = 0; y < piece.shape.length; y++) {
-                for (let x = 0; x < piece.shape[y].length; x++) {
-                    if (!piece.shape[y][x]) continue;
-                    
-                    const newX = piecePos.x + x;
-                    const newY = piecePos.y + y;
-                    
-                    if (
-                        newX < 0 || 
-                        newX >= COLS || 
-                        newY >= ROWS ||
-                        (newY >= 0 && board[newY][newX])
-                    ) {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return collisionAtPosition(piecePos.x, piecePos.y);
         }
         
         // Lock the piece in place on the board
@@ -347,8 +429,8 @@
             }
             
             if (linesCleared > 0) {
-                score += linesCleared;
-                document.getElementById('score-display').textContent = `Volume: ${score}` + '%';
+                volume += linesCleared;
+                updateVolumeDisplay();
             }
         }
         
