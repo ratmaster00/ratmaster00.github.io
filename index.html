@@ -283,6 +283,25 @@
             <a href="/nocookies" class="link">No Cookies</a>
             <a href="/tetris-volume-slider" class="link">Tetris Volume Slider</a>
         </div>
+
+        <!-- BEGIN: Visitors Counter -->
+        <div id="visitor-counter" style="margin-top: 2rem; font-size: 1rem; color: white;">
+            Visitors: <span id="counter">Loading...</span>
+        </div>
+        <script>
+            // Example visitors counter using localStorage
+            document.addEventListener('DOMContentLoaded', function () {
+                let counter = localStorage.getItem('visitorCount');
+                if (!counter) {
+                    counter = 1;
+                } else {
+                    counter = parseInt(counter) + 1;
+                }
+                localStorage.setItem('visitorCount', counter);
+                document.getElementById('counter').textContent = counter;
+            });
+        </script>
+        <!-- END: Visitors Counter -->
     </div>
 </body>
 </html>
