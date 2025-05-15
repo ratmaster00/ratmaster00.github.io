@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Wanted Minigame (Final Version with Autoplay Music)</title>
+    <title>Wanted Minigame (Final Version)</title>
     <style>
         @font-face {
             font-family: 'Mario Kart DS';
@@ -47,8 +47,6 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            border: 2px solid white;
-            border-radius: 8px;
             image-rendering: pixelated;
         }
         
@@ -69,7 +67,7 @@
         #game-board {
             flex: 1;
             position: relative;
-            background: #111 url('bg.png') center/cover;
+            background: #111;
             overflow: hidden;
         }
         
@@ -79,7 +77,7 @@
             position: absolute;
             background-size: contain;
             background-repeat: no-repeat;
-            background-position: center;           
+            background-position: center;
             cursor: pointer;
             transition: transform 0.1s;
             image-rendering: pixelated;
@@ -99,7 +97,6 @@
             padding: 30px;
             border-radius: 10px;
             text-align: center;
-            border: 2px solid #444;
             z-index: 100;
             width: 300px;
         }
@@ -120,7 +117,7 @@
         button {
             background: #333;
             color: white;
-            border: 2px solid #555;
+            border: none;
             padding: 10px 25px;
             font-size: 18px;
             cursor: pointer;
@@ -132,7 +129,6 @@
         
         button:hover {
             background: #444;
-            border-color: #777;
         }
         
         .feedback-text {
@@ -183,37 +179,13 @@
             justify-content: center;
             cursor: pointer;
         }
-        
-        #click-to-play {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        #click-to-play h2 {
-            font-size: 32px;
-            margin-bottom: 20px;
-            color: #ffff55;
-        }
     </style>
 </head>
 <body>
-    <div id="click-to-play">
-        <h2>click anywhere to start the game</h2>
-    </div>
-    
     <div id="top-bar">
         <div id="target-display">
             <div id="target-character"></div>
-            <h2>WANTED!</h2>
+            <h2>FIND ME!</h2>
         </div>
         <div id="level-display">LEVEL: 1</div>
         <div id="game-info">
@@ -226,8 +198,8 @@
     
     <div id="game-over">
         <h2>GAME OVER!</h2>
-        <div>level Reached: <span id="final-level">1</span></div>
-        <span>final Score:</span>
+        <div>Level Reached: <span id="final-level">1</span></div>
+        <span>Final Score:</span>
         <span id="final-score">0</span>
         <button onclick="resetGame()">RETRY</button>
     </div>
@@ -264,26 +236,8 @@
         // Initialize audio
         function initAudio() {
             const bgm = document.getElementById('bgm');
-            bgm.volume = 0.5; // Set reasonable volume
-            
-            // Try to play immediately
-            const playPromise = bgm.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    // Autoplay was prevented, show click-to-play screen
-                    console.log('Autoplay prevented, showing click-to-play');
-                    document.getElementById('click-to-play').style.display = 'flex';
-                });
-            }
-        }
-        
-        // Start game when clicked
-        function startGameOnClick() {
-            document.getElementById('click-to-play').style.display = 'none';
-            const bgm = document.getElementById('bgm');
-            bgm.play().catch(e => console.log('Audio play failed:', e));
-            resetGame();
+            bgm.volume = 0.5;
+            bgm.play().catch(e => console.log('Audio play failed (will try again after interaction):', e));
         }
         
         // Initialize game
@@ -353,10 +307,10 @@
                     }
                     
                     // Position in grid
-                    char.style.width = `${cellSize - 4}px`;
-                    char.style.height = `${cellSize - 4}px`;
-                    char.style.left = `${startX + x * cellSize + 2}px`;
-                    char.style.top = `${startY + y * cellSize + 2}px`;
+                    char.style.width = `${cellSize}px`;
+                    char.style.height = `${cellSize}px`;
+                    char.style.left = `${startX + x * cellSize}px`;
+                    char.style.top = `${startY + y * cellSize}px`;
                     
                     // Grid characters don't move
                     char.dataset.vx = 0;
@@ -586,18 +540,18 @@
         
         // Start game
         window.onload = function() {
-            // Initialize audio immediately
+            // Initialize audio
             initAudio();
             
-            // Set up click handler for the whole document
-            document.addEventListener('click', function startGame() {
-                // Only start if the click-to-play screen is visible
-                if (document.getElementById('click-to-play').style.display === 'flex') {
-                    startGameOnClick();
+            // Start game
+            resetGame();
+            
+            // Set up click handler to retry audio if blocked
+            document.addEventListener('click', function() {
+                if (document.getElementById('bgm').paused && audioEnabled) {
+                    document.getElementById('bgm').play().catch(e => console.log('Audio retry failed:', e));
                 }
-                // Remove this listener after first click
-                document.removeEventListener('click', startGame);
-            });
+            }, { once: true });
         };
     </script>
 </body>
