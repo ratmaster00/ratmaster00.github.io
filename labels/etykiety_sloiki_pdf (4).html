@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generator Etykiet na Słoiki</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      display: flex;
+      gap: 40px;
+      background-color: #f4f4f9;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+    .preview {
+      border: 2px solid #888;
+      padding: 30px;
+      width: 400px;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background-color: var(--bg-color, #fff8dc);
+      font-size: 50px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      text-align: center;
+      font-family: var(--font-family, Arial);
+    }
+    .preview img {
+      max-width: 160px;
+      max-height: 160px;
+      margin-bottom: 15px;
+    }
+    .controls {
+      width: 300px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 12px;
+      width: 100%;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    #preview-name {
+      font-size: 50px;
+    }
+    #preview-date {
+      font-size: 28px;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="controls">
+    <label for="name">Nazwa przetworu:</label>
+    <input type="text" id="name" placeholder="np. Dżem truskawkowy" />
+
+    <label for="date">Data:</label>
+    <div class="row">
+      <input type="text" id="date" placeholder="np. 5 lipca 2025" />
+      <button type="button" onclick="setToday()" style="width:auto; padding: 10px;">Dziś</button>
+    </div>
+
+    <label for="size">Rozmiar etykiety:</label>
+    <select id="size">
+      <option value="100x50">100x50 mm</option>
+      <option value="80x40">80x40 mm</option>
+      <option value="60x30">60x30 mm</option>
+      <option value="70x35">70x35 mm</option>
+      <option value="90x45">90x45 mm</option>
+      <option value="120x60">120x60 mm</option>
+    </select>
+
+    <label for="quantity">Ilość etykiet:</label>
+    <input type="number" id="quantity" value="1" min="1" />
+
+    <label for="preset-image">Wybierz obrazek:</label>
+    <select id="preset-image">
+      <option value="">(brak)</option>
+      <option value="🍓">Truskawka</option>
+      <option value="🍒">Wiśnia</option>
+      <option value="🍎">Jabłko</option>
+      <option value="🍑">Brzoskwinia</option>
+      <option value="🍐">Gruszka</option>
+      <option value="🍇">Winogrona</option>
+      <option value="🍍">Ananas</option>
+      <option value="🥭">Mango</option>
+      <option value="🍌">Banan</option>
+    </select>
+
+    <label for="image">Lub załaduj własny obrazek:</label>
+    <input type="file" id="image" accept="image/*" />
+
+    <label for="bg-color">Kolor tła etykiety: (domyślnie: biały)</label>
+    <select id="bg-color">
+      <option value="#fff8dc">Kremowy</option>
+      <option value="#e0f7fa">Błękitny</option>
+      <option value="#e8f5e9">Miętowy</option>
+      <option value="#fce4ec">Różowy</option>
+      <option value="#fff" selected>Biały</option>
+      <option value="#f0f0f0">Jasnoszary</option>
+    </select>
+
+    <button onclick="generatePDF()">Eksportuj jako PDF</button>
+  </div>
+
+  <div class="preview" id="preview">
+    <div id="emoji-preview" style="font-size: 80px; display: none;"></div>
+    <img id="preview-img" style="display: none;" />
+    <strong id="preview-name">(nazwa)</strong>
+    <span id="preview-date">(data)</span>
+  </div>
+
+  <script>
+    const nameInput = document.getElementById("name");
+    const dateInput = document.getElementById("date");
+    const imageInput = document.getElementById("image");
+    const emojiSelect = document.getElementById("preset-image");
+    const bgColorSelect = document.getElementById("bg-color");
+    const fontSelect = document.getElementById("font-select");
+    const preview = document.getElementById("preview");
+    const previewName = document.getElementById("preview-name");
+    const previewDate = document.getElementById("preview-date");
+    const previewImg = document.getElementById("preview-img");
+    const emojiPreview = document.getElementById("emoji-preview");
+    let imageDataUrl = null;
+    let selectedEmoji = "";
+
+    nameInput.addEventListener("input", updatePreview);
+    dateInput.addEventListener("input", updatePreview);
+    imageInput.addEventListener("change", handleImage);
+    emojiSelect.addEventListener("change", handleEmoji);
+    bgColorSelect.addEventListener("change", updateStyle);
+
+    function hexToRgb(hex) {
+  // usuń #
+  hex = hex.replace('#', '');
+  if (hex.length === 3) {
+    hex = hex.split('').map(c => c + c).join('');
+  }
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return [r, g, b];
+}
+
+    function updatePreview() {
+      const name = nameInput.value || "(nazwa)";
+      const date = dateInput.value || "(data)";
+      previewName.textContent = name;
+      previewDate.textContent = date;
+      previewName.style.fontSize = name.length > 20 ? "32px" : "50px";
+    }
+
+    function updateStyle() {
+      preview.style.setProperty("--bg-color", bgColorSelect.value);
+    }
+
+    function handleImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imageDataUrl = e.target.result;
+          previewImg.src = imageDataUrl;
+          previewImg.style.display = "block";
+          emojiPreview.style.display = "none";
+          selectedEmoji = "";
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleEmoji() {
+      selectedEmoji = emojiSelect.value;
+      imageDataUrl = null;
+      previewImg.style.display = "none";
+      emojiPreview.style.display = selectedEmoji ? "block" : "none";
+      emojiPreview.textContent = selectedEmoji;
+    }
+
+    function setToday() {
+      const today = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const formatted = today.toLocaleDateString('pl-PL', options);
+      dateInput.value = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+      updatePreview();
+    }
+
+    async function generatePDF() {
+  const jsPDF = window.jspdf.jsPDF;
+  // A4 w punktach (pt): 210x297 mm * 2.83465 = 595.28 x 841.89 pt
+  const pageWidth = 595.28;
+  const pageHeight = 841.89;
+  const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'portrait' });
+
+  const name = nameInput.value || "(nazwa)";
+  const date = dateInput.value || "(data)";
+  const size = document.getElementById("size").value;
+  const quantity = parseInt(document.getElementById("quantity").value);
+  const bgColor = getComputedStyle(preview).getPropertyValue('--bg-color').trim();
+
+  const [labelWidthMm, labelHeightMm] = size.split("x").map(Number);
+  const mmToPt = 2.83465;
+  const labelWidth = labelWidthMm * mmToPt;
+  const labelHeight = labelHeightMm * mmToPt;
+
+  // Ile etykiet w poziomie i pionie się zmieści
+  const labelsPerRow = Math.floor(pageWidth / labelWidth);
+  const labelsPerCol = Math.floor(pageHeight / labelHeight);
+  const labelsPerPage = labelsPerRow * labelsPerCol;
+
+  // Skala czcionki jak w podglądzie
+  const nameFontSize = name.length > 20 ? 22 : 30;
+  const dateFontSize = 18;
+  const emojiFontSize = 50;
+
+  let printed = 0;
+  while (printed < quantity) {
+    for (let row = 0; row < labelsPerCol; row++) {
+      for (let col = 0; col < labelsPerRow; col++) {
+        if (printed >= quantity) break;
+
+        const x = col * labelWidth;
+        const y = row * labelHeight;
+
+        doc.setFillColor(bgColor);
+        doc.roundedRect(x, y, labelWidth, labelHeight, 20, 20, 'F');
+        doc.setDrawColor(100);
+        doc.setLineWidth(1.5);
+        doc.roundedRect(x, y, labelWidth, labelHeight, 20, 20);
+
+        // Linie do wycinania (crop marks)
+        const markLen = 10;
+        const markOffset = 2;
+        doc.setDrawColor(0);
+        doc.setLineWidth(0.5);
+
+        // Górne lewo
+        doc.line(x - markOffset, y, x - markOffset, y - markLen);
+        doc.line(x - markOffset, y - markOffset, x - markLen, y - markOffset);
+
+        // Górne prawo
+        doc.line(x + labelWidth + markOffset, y, x + labelWidth + markOffset, y - markLen);
+        doc.line(x + labelWidth + markOffset, y - markOffset, x + labelWidth + markLen, y - markOffset);
+
+        // Dolne lewo
+        doc.line(x - markOffset, y + labelHeight, x - markOffset, y + labelHeight + markLen);
+        doc.line(x - markOffset, y + labelHeight + markOffset, x - markLen, y + labelHeight + markOffset);
+
+        // Dolne prawo
+        doc.line(x + labelWidth + markOffset, y + labelHeight, x + labelWidth + markOffset, y + labelHeight + markLen);
+        doc.line(x + labelWidth + markOffset, y + labelHeight + markOffset, x + labelWidth + markLen, y + labelHeight + markOffset);
+
+        // Nazwa
+        doc.setFontSize(nameFontSize);
+        doc.text(name, x + labelWidth / 2, y + 50, { align: 'center' });
+
+        // Data
+        doc.setFontSize(dateFontSize);
+        doc.text(date, x + labelWidth / 2, y + 80, { align: 'center' });
+
+        // Obrazek / emoji
+        if (imageDataUrl) {
+          doc.addImage(imageDataUrl, 'PNG', x + labelWidth / 2 - 40, y + 90, 80, 80);
+        } else if (selectedEmoji) {
+          const emojiImg = emojiToDataUrl(selectedEmoji, 80);
+          doc.addImage(emojiImg, 'PNG', x + labelWidth / 2 - 20, y + 90, 40, 40);
+        }
+
+        printed++;
+      }
+      if (printed >= quantity) break;
+    }
+    if (printed < quantity) doc.addPage();
+  }
+
+  doc.save("etykiety.pdf");
+}
+
+function emojiToDataUrl(emoji, size = 80) {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, size, size);
+  // Try to use a color emoji font
+  ctx.font = `${size - 10}px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", "Android Emoji", "EmojiSymbols", serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(emoji, size / 2, size / 2);
+  return canvas.toDataURL('image/png');
+}
+updatePreview();
+updateStyle();
+handleEmoji();
+  </script>
+</body>
+</html>
