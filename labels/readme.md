@@ -1,5 +1,7 @@
 # 🏷️ Generator Etykiet na Słoiki (HTML + JavaScript)
 
+## SKALOWANIE ETYKIET JEST POPSUTE GDY WYBIERZE SIĘ OBRAZEK!
+
 Ten projekt to prosty i elegancki **generator etykiet do słoików**, który pozwala:
 
 - ✍️ Wprowadzić nazwę przetworu i datę,
