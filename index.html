@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ratmaster00</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #1e1e1e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            background: #2d2d2d;
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .profile img {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #444;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .project {
+            background: #2d2d2d;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease;
+        }
+
+        .project img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #444;
+        }
+
+        .project:hover {
+            transform: scale(1.03);
+        }
+
+        .project a {
+            text-decoration: none;
+            color: #00aaff;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile">
+            <img src="https://via.placeholder.com/100" alt="Profile Picture">
+            <div class="profile-info">
+                <h1>ratmaster00</h1>
+                <p>Just a hobbyist coder making cool projects</p>
+            </div>
+        </div>
+
+        <div class="projects">
+            <div class="project">
+                <img src="https://via.placeholder.com/300x150" alt="Ratta Converter">
+                <h2>Ratta Converter</h2>
+                <a href="/gosigconv">Visit Project</a>
+            </div>
+
+            <div class="project">
+                <img src="https://via.placeholder.com/300x150" alt="No Cookies">
+                <h2>No Cookies</h2>
+                <a href="/nocookies">Visit Project</a>
+            </div>
+
+            <div class="project">
+                <img src="https://via.placeholder.com/300x150" alt="Tetris Volume Slider">
+                <h2>Tetris Volume Slider</h2>
+                <a href="/tetris-volume-slider">Visit Project</a>
+            </div>
+
+            <div class="project">
+                <img src="https://via.placeholder.com/300x150" alt="Wanted (SM64DS recreation)">
+                <h2>Wanted (SM64DS recreation)</h2>
+                <a href="/wanted">Visit Project</a>
+            </div>
+
+            <div class="project">
+                <img src="https://via.placeholder.com/300x150" alt="Brainrot Clicker">
+                <h2>Brainrot Clicker</h2>
+                <a href="https://tinyurl.com/brainclick">Download</a>
+            </div>
+
+            <div class="project">
+                <img src="https://via.placeholder.com/300x150" alt="Label Generator">
+                <h2>Label Generator (Polish)</h2>
+                <a href="/labels">Visit Project</a>
+            </div>
+
+            <div class="project">
+                <img src="https://via.placeholder.com/300x150" alt="GTA in Python">
+                <h2>GTA in Python (for memes)</h2>
+                <a href="https://github.com/ratmaster00/gtainpython">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
