@@ -30,17 +30,16 @@ body {
 
 /* === WINDOW CONTAINER === */
 .win7-window {
-    width: 800px;
-    max-height: 90vh; /* instead of fixed height */
-    height: auto;
+    width: 760px;
+    max-height: 75vh; /* shorter height */
     border-radius: 6px;
     background: rgba(245, 245, 245, 0.9);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255,255,255,0.4);
     box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-    overflow: hidden;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 /* === TITLE BAR === */
@@ -141,6 +140,7 @@ body {
 .content {
     display: flex;
     flex-grow: 1;
+    min-height: 0; /* important for internal scroll */
     height: 100%;
 }
 
@@ -180,9 +180,9 @@ body {
     flex-grow: 1;
     background: rgba(255,255,255,0.9);
     padding: 10px;
-    overflow-y: auto; /* allows scrolling when needed */
+    overflow-y: auto;
+    min-height: 0; /* fixes scroll cut-off */
 }
-
 
 /* === PROFILE + PROJECTS === */
 .profile {
@@ -260,7 +260,6 @@ body {
     text-decoration: underline;
 }
 </style>
-
 </head>
 <body>
 <div class="win7-window">
@@ -308,7 +307,7 @@ body {
                 <img src="/src/pfp.png" alt="Profile Picture">
                 <div class="profile-info">
                     <h1>ratmaster00</h1>
-                    <p>Just a hobbyist coder making cool projects. Now plays GD! </p>
+                    <p>Just a hobbyist coder making cool projects. Now plays GD!</p>
                 </div>
             </div>
 
@@ -350,7 +349,7 @@ body {
                 </div>
                 <div class="project">
                     <img src="/src/vtilt.png" alt="Volume slider Tilter">
-                    <h2>When normal sliders aren't enough</h2>
+                    <h2>Volume Slider Tilter</h2>
                     <a href="/voltilt">Visit Project</a>
                 </div>
             </div>
