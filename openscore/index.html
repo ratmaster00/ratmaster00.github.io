@@ -1,0 +1,196 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenScoreBoard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --digit-color-a: #00ffea;
+      --digit-color-b: #ff005d;
+      --bg-color: #0b0b0b;
+    }body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  transition: background-color 0.5s ease;
+}
+
+header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 1.8em;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings label {
+  font-size: 0.9em;
+  opacity: 0.9;
+}
+
+.settings input, .settings select {
+  margin-left: 4px;
+  border-radius: 8px;
+  padding: 4px 8px;
+  border: none;
+  outline: none;
+  background-color: rgba(255,255,255,0.1);
+  color: white;
+  transition: background 0.3s ease;
+}
+
+.settings input:hover, .settings select:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+main.scoreboard {
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.teams {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  font-size: 2em;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.scores {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  font-size: 12vw;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease, text-shadow 0.3s ease;
+}
+
+.score {
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.score:active {
+  transform: scale(1.2);
+  text-shadow: 0 0 20px currentColor;
+}
+
+.team-name {
+  cursor: text;
+  outline: none;
+  transition: color 0.3s ease;
+}
+
+footer {
+  padding: 10px;
+  opacity: 0.6;
+  font-size: 0.8em;
+}
+
+@keyframes scorePop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏆 OpenScoreBoard</h1>
+    <div class="settings">
+      <label>Team A Color <input type="color" id="colorA" value="#00ffea"></label>
+      <label>Team B Color <input type="color" id="colorB" value="#ff005d"></label>
+      <label>Background <input type="color" id="bgColor" value="#0b0b0b"></label>
+      <label>Font <select id="fontSelect">
+        <option value="Poppins">Poppins</option>
+        <option value="Orbitron">Orbitron</option>
+        <option value="Roboto">Roboto</option>
+        <option value="Arial">Arial</option>
+      </select></label>
+      <label>Thickness <input type="range" id="fontWeight" min="100" max="900" step="100" value="700"></label>
+    </div>
+  </header>  <main class="scoreboard">
+    <div class="teams">
+      <div class="team-name" id="nameA" contenteditable="true">Team A</div>
+      <div class="team-name" id="nameB" contenteditable="true">Team B</div>
+    </div>
+    <div class="scores">
+      <div class="score" id="scoreA" style="color: var(--digit-color-a)">0</div>
+      <div class="score" id="scoreB" style="color: var(--digit-color-b)">0</div>
+    </div>
+  </main>  <footer>
+    © 2025 OpenScoreBoard — Made with ✨ animations ✨
+  </footer>  <script>
+    const scoreA = document.getElementById('scoreA');
+    const scoreB = document.getElementById('scoreB');
+    const colorA = document.getElementById('colorA');
+    const colorB = document.getElementById('colorB');
+    const bgColor = document.getElementById('bgColor');
+    const fontSelect = document.getElementById('fontSelect');
+    const fontWeight = document.getElementById('fontWeight');
+
+    function increment(scoreElement) {
+      scoreElement.textContent = parseInt(scoreElement.textContent) + 1;
+      scoreElement.style.animation = 'none';
+      scoreElement.offsetHeight; // restart animation
+      scoreElement.style.animation = 'scorePop 0.3s ease';
+    }
+
+    scoreA.addEventListener('click', () => increment(scoreA));
+    scoreB.addEventListener('click', () => increment(scoreB));
+
+    colorA.addEventListener('input', e => {
+      scoreA.style.color = e.target.value;
+      document.getElementById('nameA').style.color = e.target.value;
+    });
+
+    colorB.addEventListener('input', e => {
+      scoreB.style.color = e.target.value;
+      document.getElementById('nameB').style.color = e.target.value;
+    });
+
+    bgColor.addEventListener('input', e => {
+      document.body.style.backgroundColor = e.target.value;
+    });
+
+    fontSelect.addEventListener('change', e => {
+      document.body.style.fontFamily = `'${e.target.value}', sans-serif`;
+    });
+
+    fontWeight.addEventListener('input', e => {
+      document.querySelectorAll('.score').forEach(s => s.style.fontWeight = e.target.value);
+    });
+  </script></body>
+</html>
