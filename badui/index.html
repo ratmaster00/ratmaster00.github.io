@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Nightmare Grid Paywall</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* --- CHAOS & AESTHETIC ASSAULT STYLES --- */
+        
+        /* Define jarring animations */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(360deg) scale(1.1); }
+            100% { transform: rotate(0deg); }
+        }
+        @keyframes slide {
+            0% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(50px) translateY(-10px); }
+            50% { transform: translateX(-30px) translateY(20px); }
+            75% { transform: translateX(10px) translateY(-50px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
+        /* Key Jitter Animation */
+        @keyframes jitter {
+            0% { transform: translate(0px, 0px); }
+            33% { transform: translate(1px, -1px); }
+            66% { transform: translate(-1px, 2px); }
+            100% { transform: translate(0px, 0px); }
+        }
+        
+        body {
+            background-color: #f7f7f7; /* Light gray background to clash with everything */
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .nightmare-container {
+            width: 90%;
+            max-width: 500px; 
+            padding: 2.5rem 1rem 1rem 3rem; /* Uneven padding for asymmetry */
+            border: 8px dashed #ff00ff; /* Jarring magenta dashed border */
+            box-shadow: 15px 15px 0 #00ffff; /* Off-set cyan shadow */
+            background-color: #330033; /* Deep purple background */
+            position: relative;
+            transition: all 0.5s ease-in-out; /* Enable smooth transition to easy mode */
+        }
+
+        /* Spinning, Moving Title */
+        .spinning-title {
+            animation: spin 5s ease-in-out infinite; 
+            font-size: 3rem; /* Too large for the container */
+            color: #ffcc00; /* Yellow text */
+            margin-left: -50px; /* Off-center */
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        /* Moving Status Bar */
+        #status-message {
+            animation: slide 15s ease-in-out infinite; 
+            position: absolute; /* Absolute positioning causes overlap */
+            top: 20px;
+            right: 10px;
+            z-index: 10;
+            width: 70%;
+            background-color: #ffffff;
+            color: #000000;
+            border: 5px solid red;
+            font-size: 10px; /* Too small */
+            opacity: 0.9;
+        }
+
+        /* Timer Style - Prominent and Stressful */
+        #timer-display {
+            background-color: #8b0000; /* Dark red */
+            color: #ffe400; /* Yellowish text */
+            border: 4px dashed #ffffff;
+            font-family: 'Courier New', monospace;
+            text-shadow: 2px 2px 0 #000000;
+        }
+
+        /* Poorly Fitted/Overlapping Input Fields */
+        .input-field {
+            background-color: #00ff00; /* Neon green input field */
+            color: #000000; 
+            border: 3px solid #ffcc00; 
+            font-weight: bold;
+            padding: 0.75rem;
+            outline: none;
+            width: 120% !important; /* Forces horizontal overflow */
+            transform: skewX(-5deg); /* Distorted shape */
+            margin-bottom: -15px !important; /* Makes them overlap */
+            transition: all 0.3s;
+        }
+        
+        /* Keyboard Grid Styles */
+        #keyboard-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr); /* 7 columns for an awkward fit */
+            gap: 5px;
+            margin: 3rem auto;
+            border: 3px solid #ffcc00; /* Border for the grid area */
+            padding: 5px;
+            transition: all 0.5s;
+        }
+
+        /* Easy Mode Grid Styles */
+        #keyboard-grid.easy-mode-grid {
+            grid-template-columns: repeat(10, 1fr); /* QWERTY grid layout */
+            gap: 8px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f8f8f8;
+        }
+        
+        /* The keyboard button style (Nightmare Mode) */
+        .key-button {
+            background-color: #00ffff; /* Cyan keys */
+            color: #ff00ff; /* Magenta text */
+            font-size: 1.5rem; 
+            font-weight: 900;
+            padding: 0.5rem 0;
+            border: 2px solid #ffcc00;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.1s;
+            /* Jittering animation */
+            animation: jitter 0.2s linear infinite alternate;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1;
+        }
+
+        /* Easy Mode Key Style */
+        .key-button.easy-mode-key {
+            animation: none !important; /* Stop jitter */
+            background-color: #e0e0e0 !important; 
+            color: #333333 !important;
+            border: 1px solid #ccc !important;
+            font-size: 1rem !important;
+            padding: 0.75rem 0 !important;
+        }
+
+        .key-button:hover {
+            background-color: #ff00ff; 
+            color: #00ffff;
+            box-shadow: none;
+        }
+
+        /* Paywall Key Style */
+        .paywall-key {
+            background-color: #f00 !important;
+            color: #ff0 !important;
+            border-color: #ff0 !important;
+        }
+
+        /* Placeholder Key Style */
+        .placeholder-key {
+            background-color: #0d0d0d !important;
+            color: #0d0d0d !important;
+            border-color: #0d0d0d !important;
+            cursor: not-allowed;
+        }
+
+        #login-button {
+            transform: rotate(-3deg); /* Slightly rotated button */
+            margin-top: 4rem !important; /* Excessive margin */
+        }
+
+        /* Distracting Pop-ups */
+        .annoying-popup {
+            position: fixed;
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(45deg, #ff00ff, #00ff00); /* Ugly gradient */
+            border: 5px solid yellow;
+            z-index: 1000; /* Above everything */
+            padding: 10px;
+            color: black;
+            font-weight: bold;
+            text-align: center;
+            font-family: monospace;
+            animation: spin 3s linear infinite; /* Reuse spin animation */
+        }
+        #popup-top-left { top: 10px; left: 10px; transform: rotate(5deg); }
+        #popup-bottom-right { bottom: 10px; right: 10px; transform: rotate(-5deg); }
+        #popup-mid-left { top: 50%; left: 0; transform: translateY(-50%) skewY(10deg); }
+        
+        .animate-pulse {
+            animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Annoying Fixed Pop-ups -->
+    <div id="popup-top-left" class="annoying-popup rounded-full">BUY NOW! (REQUIRED)</div>
+    <div id="popup-bottom-right" class="annoying-popup rounded-lg">SYSTEM OVERLOAD!</div>
+    <div id="popup-mid-left" class="annoying-popup rounded-sm">CLICK ME! (DO NOT)</div>
+
+    <!-- Ad Overlay -->
+    <div id="ad-overlay" class="fixed inset-0 bg-black bg-opacity-90 hidden flex items-center justify-center z-[1001]">
+        <div class="bg-yellow-200 text-black p-8 border-8 border-red-600 shadow-2xl w-full max-w-lg text-center">
+            <h2 id="ad-title" class="text-4xl font-extrabold text-purple-700 mb-4 animate-pulse">
+                VALIDATING MANDATORY SERVER HEALTH CHECK...
+            </h2>
+            <p id="ad-timer" class="text-8xl font-mono mb-6 text-red-600">
+                15
+            </p>
+            <div class="text-xl font-bold text-gray-800">
+                This unskippable process ensures *your* security. Do not close this window.
+            </div>
+        </div>
+    </div>
+
+    <div class="nightmare-container rounded-xl">
+        <!-- THE INVISIBLE, CONVENIENT BUTTON (Hidden Feature!) -->
+        <button id="easy-mode-button" class="absolute top-0 right-0 w-10 h-10 z-50 cursor-pointer" style="opacity: 0.001;" title="Enable Easy Mode (QWERTY)"></button>
+
+        <h1 class="spinning-title font-extrabold text-center uppercase tracking-wider">
+            SYSTEM LOGIN V1.0
+        </h1>
+        <div id="status-message" class="text-center p-1 font-mono font-bold border-2 rounded-lg">
+            KEYBOARD SHUFFLED FOR SECURITY.
+        </div>
+        
+        <!-- Timer Display -->
+        <div id="timer-display" class="text-center text-4xl font-extrabold mb-4 p-2 rounded-lg">
+            TIME LEFT: 60s
+        </div>
+
+        <!-- The main form -->
+        <div class="space-y-4 mb-8">
+            <!-- FIELD SWAP: Username is masked, Password is plain text -->
+            <input type="password" id="username" placeholder="PASSWORD (Visible)" class="input-field rounded focus:ring-4 focus:ring-yellow-500" readonly>
+            <input type="text" id="password" placeholder="USERNAME (Masked)" class="input-field rounded focus:ring-4 focus:ring-yellow-500" readonly>
+        </div>
+
+        <!-- Keyboard Grid (Chaotic, Jittering, Randomized Grid) -->
+        <div id="keyboard-grid">
+            <!-- Keys will be injected in random order here -->
+        </div>
+
+        <button id="login-button" class="mt-8 w-full py-3 bg-[#ffcc00] text-black font-bold text-xl rounded-lg shadow-xl hover:bg-yellow-300 transition-colors">
+            Attempt Login (Unskippable Ad Required)
+        </button>
+        <p class="text-xs text-center text-gray-400 mt-2">
+            Tip: Use the keyboard above. DO NOT use your physical keys.
+        </p>
+    </div>
+
+    <script type="module">
+        // --- Core UI Element References ---
+        const easyModeButton = document.getElementById('easy-mode-button');
+        const nightmareContainer = document.querySelector('.nightmare-container');
+        const spinningTitle = document.querySelector('.spinning-title');
+        const maskedInput = document.getElementById('username'); 
+        const visibleInput = document.getElementById('password'); 
+        const keyboardGrid = document.getElementById('keyboard-grid');
+        const statusMessage = document.getElementById('status-message');
+        const timerDisplay = document.getElementById('timer-display');
+        const adOverlay = document.getElementById('ad-overlay');
+        const adTimerDisplay = document.getElementById('ad-timer');
+        
+        // --- Global State ---
+        let currentInput = maskedInput;
+        let keys = Array.from({ length: 26 }, (_, i) => String.fromCharCode(97 + i)); 
+        const QWERTY_KEYS = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm'];
+        let randomizerInterval = null;
+        let timerInterval = null;
+        let timeRemaining = 300; 
+        let isGKeyPaid = false; 
+        let isSystemLocked = false;
+        let isEasyMode = false; // New state
+
+        // Function to shuffle an array (Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // --- Event Handlers ---
+
+        // Set the active input field on focus
+        maskedInput.addEventListener('focus', () => {
+            currentInput = maskedInput;
+            maskedInput.classList.add('border-purple-500');
+            visibleInput.classList.remove('border-purple-500');
+        });
+        visibleInput.addEventListener('focus', () => {
+            currentInput = visibleInput;
+            visibleInput.classList.add('border-purple-500');
+            maskedInput.classList.remove('border-purple-500');
+        });
+
+        maskedInput.focus();
+
+        const handleGKeyPaywall = () => {
+            if (isSystemLocked || isEasyMode) return;
+
+            // Simulate the paywall activation with a status message and a delay
+            statusMessage.textContent = 'PAYWALL: G key locked. Sending $5.00 payment... (check console)';
+            statusMessage.className = 'text-center p-1 font-mono font-bold border-2 rounded-lg bg-yellow-500 text-black';
+
+            // Simulate payment success after 1.5 seconds
+            setTimeout(() => {
+                if (isSystemLocked || isEasyMode) return;
+                console.log('Payment successful! $5.00 debited for key "G".');
+                isGKeyPaid = true;
+                statusMessage.textContent = 'G Key Unlocked. Thanks for your payment!';
+                statusMessage.className = 'text-center p-1 font-mono font-bold border-2 rounded-lg bg-green-500 text-white';
+                
+                // Re-render the keyboard to enable the key immediately
+                renderKeyboard(); 
+                
+                // Restore status message after a short time
+                setTimeout(() => {
+                    if (isSystemLocked || isEasyMode) return;
+                    statusMessage.textContent = `KEYBOARD SHUFFLED FOR SECURITY.`;
+                    statusMessage.className = 'text-center p-1 font-mono font-bold border-2 rounded-lg bg-white text-black';
+                }, 1000);
+            }, 1500); 
+        };
+
+        /**
+         * Types the correct character into the currently focused field.
+         */
+        const handleKeyPress = (clickedKey) => {
+            if (timeRemaining > 0 && !isSystemLocked) {
+                if (clickedKey === 'g' && !isGKeyPaid && !isEasyMode) {
+                    handleGKeyPaywall();
+                    return;
+                }
+                currentInput.value += clickedKey;
+            }
+        };
+        
+        /**
+         * Enters the "Easy Mode" where everything is normal and usable.
+         */
+        const enterEasyMode = () => {
+            if (isSystemLocked || isEasyMode) return;
+            
+            isEasyMode = true;
+            isGKeyPaid = true; 
+
+            // 1. Stop Chaos Animations & Fix Status Bar
+            clearInterval(randomizerInterval);
+            spinningTitle.style.animation = 'none';
+            spinningTitle.style.marginLeft = '0';
+            statusMessage.style.animation = 'none';
+            statusMessage.style.position = 'static'; 
+            statusMessage.style.width = '100%';
+            statusMessage.style.opacity = '1';
+            statusMessage.className = 'text-center p-2 font-sans font-normal border rounded-lg bg-green-100 text-green-800 border-green-400';
+            statusMessage.textContent = 'EASY MODE ACTIVATED. Enjoy sanity.';
+
+            // 2. Fix Inputs
+            // Swap roles and types: Username (text), Password (password)
+            maskedInput.type = 'text';
+            maskedInput.placeholder = 'USERNAME';
+            visibleInput.type = 'password';
+            visibleInput.placeholder = 'PASSWORD';
+
+            // Fix styles on both inputs
+            const fixInputStyles = (input) => {
+                input.classList.remove('input-field', 'transform', 'skewX-5', 'w-120%', 'bg-00ff00', 'border-ffcc00', 'mb--15');
+                input.classList.add('bg-white', 'w-full', 'px-3', 'py-2', 'border', 'border-gray-300', 'text-gray-800', 'font-normal', 'mb-4');
+                input.style.marginBottom = '1rem'; 
+                input.style.width = '100%'; 
+                input.style.transform = 'none';
+                input.style.backgroundColor = '#ffffff';
+            };
+            fixInputStyles(maskedInput);
+            fixInputStyles(visibleInput);
+            
+            // 3. Fix Keyboard
+            keyboardGrid.classList.add('easy-mode-grid'); 
+            renderKeyboard(true); 
+            
+            // 4. Update overall container style
+            nightmareContainer.style.border = '1px solid #ccc';
+            nightmareContainer.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+            nightmareContainer.style.backgroundColor = '#ffffff';
+
+            // 5. Hide annoying popups and timer
+            document.getElementById('popup-top-left').style.display = 'none';
+            document.getElementById('popup-bottom-right').style.display = 'none';
+            document.getElementById('popup-mid-left').style.display = 'none';
+            timerDisplay.style.display = 'none';
+            
+            // 6. Final button appearance fix
+            document.getElementById('login-button').style.transform = 'none';
+            document.getElementById('login-button').style.marginTop = '1rem';
+            document.getElementById('login-button').textContent = 'Log In (Ad Disabled)';
+
+            // Set current input focus back to the new "Username" field
+            currentInput = maskedInput;
+            maskedInput.focus();
+        };
+
+        /**
+         * Renders the custom keyboard in a chaotic grid arrangement.
+         */
+        const renderKeyboard = (easyMode = false) => {
+            keyboardGrid.innerHTML = ''; 
+            
+            let keysToRender;
+            let placeholdersNeeded = 0;
+
+            if (easyMode) {
+                keysToRender = QWERTY_KEYS;
+            } else {
+                shuffleArray(keys);
+                keysToRender = keys;
+                placeholdersNeeded = 2;
+            }
+
+            keysToRender.forEach(key => {
+                const button = document.createElement('button');
+                
+                button.setAttribute('data-key', key);
+                button.textContent = key.toUpperCase();
+                
+                if (easyMode) {
+                    button.className = 'key-button rounded-md shadow-sm easy-mode-key';
+                } else {
+                    button.className = 'key-button rounded-sm shadow-md';
+                    if (key === 'g' && !isGKeyPaid) {
+                        button.classList.add('paywall-key');
+                        button.setAttribute('data-paywall', 'true');
+                        button.textContent = 'G (PAY)';
+                    }
+                }
+
+                const newButton = button.cloneNode(true); 
+                newButton.addEventListener('click', () => handleKeyPress(key));
+                
+                keyboardGrid.appendChild(newButton);
+            });
+
+            // Add placeholders only in Nightmare Mode
+            for(let i = 0; i < placeholdersNeeded; i++) {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'placeholder-key rounded-sm';
+                placeholder.textContent = 'BLANK';
+                keyboardGrid.appendChild(placeholder);
+            }
+        };
+
+        /**
+         * Randomly re-shuffles the keyboard every 3 seconds for maximum instability.
+         */
+        const startRandomizer = () => {
+            randomizerInterval = setInterval(() => {
+                if (isSystemLocked || isEasyMode) {
+                    clearInterval(randomizerInterval);
+                    return;
+                }
+                renderKeyboard();
+                statusMessage.textContent = `KEYBOARD SHUFFLED FOR SECURITY.`;
+                setTimeout(() => {
+                    if (isSystemLocked || isEasyMode) return;
+                    statusMessage.textContent = `SYSTEM STABILITY LOW.`;
+                }, 1000);
+            }, 3000); // Re-randomize every 3 seconds
+        };
+        
+        /**
+         * Handles the countdown logic and UI update.
+         */
+        const startCountdown = () => {
+            timerDisplay.classList.add('bg-red-800', 'text-yellow-300');
+            timerInterval = setInterval(() => {
+                if (isSystemLocked) {
+                    clearInterval(timerInterval);
+                    return;
+                }
+                timeRemaining--;
+                timerDisplay.textContent = `TIME LEFT: ${timeRemaining}s`;
+
+                if (timeRemaining <= 10) {
+                    // Flash the timer to increase panic
+                    timerDisplay.classList.toggle('bg-red-800');
+                    timerDisplay.classList.toggle('bg-yellow-800');
+                    timerDisplay.classList.toggle('text-white');
+                }
+
+                if (timeRemaining <= 0) {
+                    handleTimeUp();
+                }
+            }, 1000);
+        };
+
+        /**
+         * Executes the destructive actions when the time limit expires.
+         */
+        const handleTimeUp = () => {
+            isSystemLocked = true;
+            clearInterval(timerInterval);
+            clearInterval(randomizerInterval); 
+
+            // 1. Lock the inputs and clear them
+            maskedInput.value = '';
+            visibleInput.value = '';
+            maskedInput.disabled = true;
+            visibleInput.disabled = true;
+
+            // 2. Disable all keys (visual lock)
+            const allKeys = keyboardGrid.querySelectorAll('.key-button, .paywall-key, .placeholder-key');
+            allKeys.forEach(key => {
+                key.style.animation = 'none'; 
+                key.style.cursor = 'not-allowed';
+                key.disabled = true;
+                key.removeEventListener('click', handleKeyPress); 
+                key.classList.remove('key-button', 'paywall-key', 'easy-mode-key');
+                key.classList.add('bg-black', 'text-red-500', 'border-red-500');
+                key.textContent = 'LOCKED';
+            });
+
+            // 3. Show the final failure message prominently
+            statusMessage.textContent = `FATAL ERROR: Time limit expired. System locked due to inactivity.`;
+            statusMessage.style.fontSize = '20px';
+            statusMessage.className = 'text-center p-3 font-mono font-bold border-2 rounded-lg bg-black text-red-500';
+            statusMessage.style.animation = 'none'; 
+
+            // Disable the login button
+            document.getElementById('login-button').disabled = true;
+            document.getElementById('login-button').textContent = 'SYSTEM LOCKED';
+            
+            // Final timer state
+            timerDisplay.textContent = 'TIME UP';
+            timerDisplay.className = 'text-center text-4xl font-extrabold mb-4 p-2 rounded-lg bg-black text-red-500';
+        };
+
+        /**
+         * Shows the unskippable 15-second ad before attempting login.
+         */
+        const showAdAndAttemptLogin = () => {
+            if (isSystemLocked || isEasyMode) {
+                // Skip the ad in Easy Mode, but still fail the login
+                if (isEasyMode) {
+                    const u = maskedInput.value;
+                    statusMessage.textContent = `CRITICAL FAILURE: Invalid credentials for ${u}. Easy Mode is for convenience, not authentication.`;
+                    statusMessage.className = 'text-center p-2 font-sans font-normal border rounded-lg bg-yellow-100 text-yellow-800 border-yellow-400';
+                }
+                return;
+            }
+
+            adOverlay.classList.remove('hidden');
+            let adTime = 15;
+            adTimerDisplay.textContent = adTime;
+            
+            const adInterval = setInterval(() => {
+                adTime--;
+                adTimerDisplay.textContent = adTime;
+
+                if (adTime <= 0) {
+                    clearInterval(adInterval);
+                    adOverlay.classList.add('hidden');
+                    
+                    // Proceed with the (failing) login logic
+                    const u = maskedInput.value;
+                    const p = visibleInput.value;
+                    
+                    statusMessage.textContent = `CRITICAL FAILURE: Invalid credentials for ${u}. Your password is too visible.`;
+                    statusMessage.className = 'text-center p-1 font-mono font-bold border-2 rounded-lg bg-red-700 text-yellow-100';
+                }
+            }, 1000);
+        };
+
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderKeyboard();
+            startRandomizer();
+            startCountdown();
+            
+            // Disable physical keyboard input entirely
+            document.addEventListener('keydown', (e) => {
+                e.preventDefault(); 
+            });
+            
+            document.getElementById('login-button').addEventListener('click', showAdAndAttemptLogin);
+            easyModeButton.addEventListener('click', enterEasyMode);
+
+            maskedInput.focus();
+        });
+    </script>
+</body>
+</html>
