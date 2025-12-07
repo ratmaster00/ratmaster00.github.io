@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DownloadMyGPU.net - Accelerate Your PC!</title>
+    <style>
+        /* Basic Reset and Font */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f7; /* Light grayish-blue for a slight 'tech' feel */
+            color: #333;
+            line-height: 1.6;
+            transition: background-color 0.5s; /* For the redirect effect */
+        }
+
+        /* Container for Centering */
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styling */
+        header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #0056b3; /* Tech blue separator */
+            margin-bottom: 30px;
+            cursor: pointer; /* To make the redirect joke clickable */
+            user-select: none;
+        }
+
+        header h1 {
+            color: #0056b3;
+            font-size: 2.5em;
+            margin: 0;
+        }
+
+        header p {
+            color: #555;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        /* GPU Card Styles */
+        .gpu-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .gpu-card {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-left: 5px solid #0056b3; /* Highlight strip */
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .gpu-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .gpu-card h3 {
+            margin-top: 0;
+            color: #1a1a1a;
+            font-size: 1.5em;
+        }
+
+        .gpu-card .specs {
+            font-size: 0.9em;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .gpu-card .description {
+            font-style: italic;
+            color: #444;
+            min-height: 80px; /* To keep card height consistent */
+        }
+
+        /* Download Button Styling */
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background-color: #008cba; /* A more 'download-y' blue */
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 3px #005d7a; /* 3D effect */
+        }
+
+        .download-btn:hover {
+            background-color: #007a9e;
+        }
+
+        .download-btn:active {
+            background-color: #005d7a;
+            box-shadow: 0 1px #005d7a;
+            transform: translateY(2px);
+        }
+
+        /* Footer and Disclaimer */
+        footer {
+            margin-top: 40px;
+            padding: 20px 0;
+            text-align: center;
+            border-top: 1px dashed #ccc;
+            font-size: 0.8em;
+            color: #777;
+        }
+
+        .alert-bar {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid #ffeeba;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* --- FAKE AD STYLING --- */
+        .ad-banner {
+            margin: 30px auto;
+            padding: 15px;
+            border: 2px solid #ffcc00;
+            background-color: #fffacd;
+            text-align: center;
+            border-radius: 4px;
+            animation: pulse 2s infinite;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(255, 165, 0, 0.5);
+        }
+        .ad-banner h4 {
+            color: #d9534f;
+            margin: 0 0 5px 0;
+            font-size: 1.2em;
+            text-shadow: 1px 1px 1px #fff;
+        }
+        .ad-banner p {
+            font-size: 0.9em;
+            color: #5cb85c;
+            font-weight: bold;
+        }
+        @keyframes pulse {
+            0% { border-color: #ffcc00; }
+            50% { border-color: #ffaa00; }
+            100% { border-color: #ffcc00; }
+        }
+
+        /* --- CUSTOM MODAL STYLING (Replaces alert()) --- */
+        .popup-modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5); /* Semi-transparent black background */
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: modal-open 0.4s;
+        }
+
+        .modal-content h3 {
+            color: #0056b3;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+
+        .modal-close-btn {
+            background-color: #d9534f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+            transition: background-color 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background-color: #c9302c;
+        }
+
+        @keyframes modal-open {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header onclick="fakeRedirect()">
+            <h1>DownloadMyGPU.net <span style="color: red;">[BETA v2.1]</span></h1>
+            <p>"Accelerate your PC with <strong>zero latency!</strong> (and zero hardware) - Click here for special offers!"</p>
+            <div class="alert-bar">
+                ⚡ <strong>IMPORTANT NOTICE:</strong> Our servers are currently experiencing high demand! Downloads are throttled to 100kb/s to ensure stability. Thank you for your patience!
+            </div>
+        </header>
+
+        <h2>💻 High-Performance Digital Graphics Accelerators</h2>
+        
+        <!-- FAKE AD 1 -->
+        <div class="ad-banner" onclick="showModal('FREE Anti-Virus Scan', 'We detected 17 critical performance threats. Click &quot;Close&quot; to download &quot;FixMyPC.exe&quot; immediately!', 'Ad')">
+            <h4>🚨 WARNING: Your GPU Drivers Are OUT OF DATE! 🚨</h4>
+            <p>CLICK HERE TO DOWNLOAD OUR NEW <strong>PERFORMANCE INJECTOR 2025</strong> (Sponsored)</p>
+        </div>
+
+        <div class="gpu-list">
+
+            <!-- Card 1: GeForce 256 -->
+            <div class="gpu-card">
+                <h3>NVIDIA GeForce 256 <span style="color: green;">(Legacy)</span></h3>
+                <p class="specs"><strong>File Size:</strong> 43 KB | <strong>Architecture:</strong> T&L | <strong>Requires:</strong> Windows 98/ME+</p>
+                <p class="description">🚀 <strong>The Original GPU!</strong> This download delivers pure, uncompressed <strong>T&L (Transform & Lighting)</strong> hardware acceleration. Guaranteed to improve your 1999 benchmarking scores. <em>Perfect for retro enthusiasts!</em></p>
+                <button class="download-btn" onclick="showModal('Download Complete: GeForce 256', 'Your virtual 43 KB GPU is installed! Your desktop resolution will be optimized for maximum pixel density (640x480 recommended).','GeForce 256')">Download Legacy .exe</button>
+            </div>
+
+            <!-- Card 2: GTX 1080 Ti -->
+            <div class="gpu-card">
+                <h3>NVIDIA GeForce GTX 1080 Ti <span style="color: orange;">(Legendary)</span></h3>
+                <p class="specs"><strong>File Size:</strong> 1.2 GB | <strong>Architecture:</strong> Pascal | <strong>Max FPS:</strong> User Dependent</p>
+                <p class="description"><strong>The Best Price-to-Performance Ratio!</strong> This file contains the compressed essence of <strong>Pascal architecture</strong>. Installation will result in your PC <em>thinking</em> it has a 1080 Ti, providing a huge placebo effect and a 100% boost in confidence.</p>
+                <button class="download-btn" onclick="showModal('Download Complete: GTX 1080 Ti', 'Simulating high-speed decompression... complete! Please download the accompanying &quot;RGB Controller.zip&quot; file to experience true performance.','GTX 1080 Ti')">Get Pascal Power!</button>
+            </div>
+
+            <!-- Card 3: RTX 3060 -->
+            <div class="gpu-card">
+                <h3>NVIDIA GeForce RTX 3060</h3>
+                <p class="specs"><strong>File Size:</strong> 3.5 GB | <strong>Features:</strong> Ray Tracing 2.0 | <strong>VRAM:</strong> Theoretical 12GB</p>
+                <p class="description">✨ <strong>Entry-Level Ray Tracing!</strong> We've captured the basic ray tracing algorithms and put them in a zip file. When you run the installer, your screen will momentarily flicker to simulate a perfectly rendered reflection (it's actually just a screensaver).</p>
+                <button class="download-btn" onclick="showModal('Download Complete: RTX 3060', 'Initializing RT Cores... success! Your machine now supports &quot;Pre-rendered Reflections Mode&quot;. The magic is now in your imagination!','RTX 3060')">Download Ray Tracing!</button>
+            </div>
+
+            <!-- Card 4: RX 6900 XT -->
+            <div class="gpu-card">
+                <h3>AMD Radeon RX 6900 XT</h3>
+                <p class="specs"><strong>File Size:</strong> 4.1 GB | <strong>Architecture:</strong> RDNA 2 | <strong>Boost Clock:</strong> Infinite</p>
+                <p class="description">🔥 <strong>Big Navi, Small File!</strong> Includes our proprietary <strong>FidelityFX Super Imagination (FFSI)</strong> tech. This download doesn't render more pixels; it just makes your existing pixels <em>feel</em> better about themselves. <em>Warning: May cause high CPU fan noise in anticipation.</em></p>
+                <button class="download-btn" onclick="showModal('Download Complete: RX 6900 XT', 'Optimizing shaders... done. Your fan speed setting has been unlocked. Prepare for lift-off.','RX 6900 XT')">Unleash RDNA 2!</button>
+            </div>
+
+            <!-- Card 5: RTX 4090 -->
+            <div class="gpu-card">
+                <h3>NVIDIA GeForce RTX 4090 <span style="color: red;">(Flagship)</span></h3>
+                <p class="specs"><strong>File Size:</strong> 8.8 GB | <strong>Power Draw:</strong> 0W | <strong>Estimated Price:</strong> Free</p>
+                <p class="description">🤯 <strong>ULTIMATE POWER!</strong> This 8.8 GB zip file contains a blank text document that simply reads: &quot;Congrats! You saved $1600.&quot; Plus, a folder named <strong>'DLSS 3.0'</strong> containing a single low-res image of a clock for Frame Generation.</p>
+                <button class="download-btn" onclick="showModal('Download Complete: RTX 4090', 'Preparing to install 24GB of theoretical VRAM... complete. Check your email for instructions on how to locate your physical GPU (Hint: check spam).','RTX 4090')">DOWNLOAD NOW (LIMITED STOCK!)</button>
+            </div>
+            
+            <!-- Card 6: Intel Arc A770 -->
+            <div class="gpu-card">
+                <h3>Intel Arc A770 <span style="color: #0071C5;">(New!)</span></h3>
+                <p class="specs"><strong>File Size:</strong> 2.0 GB | <strong>Features:</strong> Driver Updates | <strong>Launch Date:</strong> Today!</p>
+                <p class="description">✅ <strong>The Alchemist Package!</strong> This file is mostly composed of driver updates that promise to fix an obscure bug you didn't even know you had. Includes a brief animated GIF of a wizard for immersion. <em>Results may vary based on moon phase.</em></p>
+                <button class="download-btn" onclick="showModal('Download Complete: Arc A770', 'We are working tirelessly to resolve your compatibility issues... finished. The driver package installed successfully. Please check back next week for performance stability.','Arc A770')">Download Alchemist Drivers!</button>
+            </div>
+
+        </div>
+
+        <!-- FAKE AD 2 -->
+        <div class="ad-banner" onclick="showModal('Congratulations!', 'You are the 1,000,000th visitor! Click &quot;Close&quot; to claim your free high-end monitor (Shipping is $299.99).', 'Ad')">
+            <h4>🚨 WARNING: Your GPU Drivers Are OUT OF DATE! 🚨</h4>
+            <p>100% VIRUS FREE! CLICK FAST BEFORE TIME RUNS OUT!</p>
+        </div>
+
+
+        <footer>
+            <p>&copy; 2025 DownloadMyGPU.net - A subsidiary of <strong>Vaporware Solutions Inc.</strong></p>
+            <p><strong>Disclaimer:</strong> By clicking 'Download,' you agree that your frame rate will remain exactly the same. All 'GPUs' are delivered digitally and exist solely as a concept. We are not responsible for sudden outbreaks of common sense or disappointment. Please recycle your actual computer components.</p>
+        </footer>
+    </div>
+
+    <!-- The Custom Modal Structure -->
+    <div id="downloadModal" class="popup-modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Download Complete</h3>
+            <p id="modalBody">Your digital GPU has been installed.</p>
+            <button class="modal-close-btn" onclick="hideModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Global state for the fake redirect functionality
+        let redirectTimerId;
+        let contentToRestore = '';
+
+        // Get the modal elements
+        const modal = document.getElementById('downloadModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+
+        /**
+         * Shows the custom modal popup with dynamic content.
+         */
+        function showModal(title, content, type) {
+            modalTitle.textContent = title;
+            modalBody.innerHTML = content;
+            modal.style.display = 'block';
+
+            // Special handling for ad clicks (just for flavor)
+            if (type === 'Ad') {
+                modalTitle.style.color = '#d9534f';
+            } else {
+                modalTitle.style.color = '#0056b3';
+            }
+        }
+
+        // Hides the modal
+        function hideModal() {
+            modal.style.display = 'none';
+        }
+        
+        // Close the modal if the user clicks anywhere outside of it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                hideModal();
+            }
+        }
+
+        /**
+         * Simulates a redirect when the header is clicked.
+         * Sets a timeout to automatically restore content.
+         */
+        function fakeRedirect() {
+            // Change body color to simulate a loading screen/flash
+            document.body.style.backgroundColor = '#d9edf7';
+            
+            // 1. Capture content to restore
+            contentToRestore = document.querySelector('.container').innerHTML;
+
+            // Notice the link now has an ID and no inline onclick attribute
+            const redirectContent = `
+                <div id="redirect-screen" style="text-align: center; padding: 100px; color: #31708f; background-color: #f0f4f7; border: 1px solid #bce8f1; border-radius: 8px;">
+                    <h2 style="font-size: 2em; color: #0056b3;">Redirecting to GetFreeRobux.tk...</h2>
+                    <p style="font-size: 1.2em;">You have been automatically redirected to our partner site for essential system utilities.</p>
+                    <p>Wait 5 seconds or click <a href="#" id="cancel-link" style="color: #008cba; text-decoration: underline;">HERE</a> to cancel the redirect.</p>
+                    <p style="margin-top: 30px; font-size: 0.8em;">(Note: This is just a joke. No actual redirect will occur.)</p>
+                </div>
+            `;
+
+            // Replace content with the fake redirect message
+            const container = document.querySelector('.container');
+            container.innerHTML = redirectContent;
+
+            // 2. Attach event listener to the newly created element (safer than inline JS)
+            const cancelLink = document.getElementById('cancel-link');
+            if (cancelLink) {
+                cancelLink.addEventListener('click', restoreContent);
+            }
+
+            // 3. Set the timeout and store its ID
+            redirectTimerId = setTimeout(() => {
+                container.innerHTML = contentToRestore;
+                document.body.style.backgroundColor = '#f0f4f7';
+            }, 5000);
+        }
+        
+        /**
+         * Restores the content immediately if the user clicks the "cancel" link.
+         * Now acts as a standard event listener callback.
+         */
+        function restoreContent(e) {
+            e.preventDefault();
+            // Clear the automatic timeout using the stored ID
+            clearTimeout(redirectTimerId); 
+            // Restore the content using the globally stored content
+            document.querySelector('.container').innerHTML = contentToRestore;
+            document.body.style.backgroundColor = '#f0f4f7';
+        }
+
+    </script>
+
+</body>
+</html>
