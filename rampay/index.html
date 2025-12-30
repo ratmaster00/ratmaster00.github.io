@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAMpay | The World's First Memory-Backed Currency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #9333ea, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80vw;
+            height: 60vh;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(3, 7, 18, 0) 70%);
+            z-index: -1;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .card-hover:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-4px);
+            transition: all 0.3s ease;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .status-dot {
+            height: 8px;
+            width: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            animation: pulse-slow 2s infinite;
+        }
+
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .ticker {
+            display: flex;
+            white-space: nowrap;
+            animation: ticker 30s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            animation: modalIn 0.3s ease-out;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #1f2937;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-glow"></div>
+
+    <div class="ticker-wrap text-xs font-mono uppercase tracking-widest text-gray-400">
+        <div class="ticker">
+            <span class="mx-8"><i class="fa-solid fa-microchip mr-2"></i> DDR5-6400: $0.12/MB <span class="text-green-400">▲ 2.4%</span></span>
+            <span class="mx-8"><i class="fa-solid fa-microchip mr-2"></i> DDR4-3200: $0.08/MB <span class="text-red-400">▼ 0.5%</span></span>
+            <span class="mx-8"><i class="fa-solid fa-microchip mr-2"></i> SODIMM: $0.06/MB <span class="text-gray-500">─ 0.0%</span></span>
+            <span class="mx-8"><i class="fa-solid fa-microchip mr-2"></i> LPDDR5X: $0.15/MB <span class="text-green-400">▲ 8.1%</span></span>
+            <span class="mx-8"><i class="fa-solid fa-microchip mr-2"></i> DDR5-6400: $0.12/MB <span class="text-green-400">▲ 2.4%</span></span>
+            <span class="mx-8"><i class="fa-solid fa-microchip mr-2"></i> DDR4-3200: $0.08/MB <span class="text-red-400">▼ 0.5%</span></span>
+        </div>
+    </div>
+
+    <nav class="container mx-auto px-6 py-6 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <div class="bg-blue-600 p-1.5 rounded-lg">
+                <i class="fa-solid fa-memory text-white text-xl"></i>
+            </div>
+            <span class="text-xl font-bold tracking-tight">RAMpay</span>
+        </div>
+        <div class="hidden md:flex space-x-8 text-sm font-medium text-gray-400">
+            <a href="#hogger" class="hover:text-white transition">The Hogger</a>
+            <a href="#shipping" class="hover:text-white transition">Physical Logistics</a>
+            <a href="#merchants" class="hover:text-white transition">Where to Pay</a>
+            <a href="#" class="hover:text-white transition">Enterprise</a>
+        </div>
+        <div>
+            <button onclick="openModal('downloadModal')" class="bg-white text-black px-5 py-2 rounded-full text-sm font-semibold hover:bg-gray-200 transition">Get Started</button>
+        </div>
+    </nav>
+
+    <header class="container mx-auto px-6 pt-20 pb-32 text-center">
+        <div class="inline-flex items-center glass rounded-full px-4 py-1.5 mb-8 text-xs font-medium border border-blue-500/30">
+            <span class="status-dot"></span> System Status: 14.2 Petabytes Currently Hogged
+        </div>
+        <h1 class="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+            Stop paying with cash.<br>
+            <span class="gradient-text">Pay with your Latency.</span>
+        </h1>
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-12">
+            Accepted at 98% of online retailers. Simply select <strong>RAMpay</strong> at checkout and watch your computer fan spin as your transaction completes.
+        </p>
+        <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
+            <button onclick="openModal('downloadModal')" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition shadow-lg shadow-blue-500/20 flex items-center justify-center">
+                <i class="fa-solid fa-download mr-2"></i> Download "The Hogger"
+            </button>
+            <a href="#shipping" class="glass hover:bg-white/5 px-8 py-4 rounded-xl font-semibold text-lg transition border border-white/10 flex items-center justify-center">
+                <i class="fa-solid fa-truck-fast mr-2"></i> Ship Physical RAM
+            </a>
+        </div>
+    </header>
+
+    <section id="merchants" class="container mx-auto px-6 py-20 text-center">
+        <h2 class="text-3xl font-bold mb-4">Pay Online Anywhere</h2>
+        <p class="text-gray-400 mb-12">Integrated with major e-commerce platforms. No credit card required, just memory.</p>
+        <div class="flex flex-wrap justify-center gap-12 opacity-40 grayscale hover:grayscale-0 transition duration-500">
+            <i class="fa-brands fa-amazon text-4xl"></i>
+            <i class="fa-brands fa-ebay text-4xl"></i>
+            <i class="fa-brands fa-shopify text-4xl"></i>
+            <i class="fa-brands fa-apple text-4xl"></i>
+            <i class="fa-brands fa-steam text-4xl"></i>
+            <i class="fa-brands fa-uber text-4xl"></i>
+        </div>
+    </section>
+
+    <section id="hogger" class="container mx-auto px-6 py-24 bg-gradient-to-b from-transparent to-gray-900/50">
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="glass p-8 rounded-3xl card-hover border border-white/5">
+                <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-bore-hole text-blue-500 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Digital Hogging</h3>
+                <p class="text-gray-400 leading-relaxed">
+                    Install our license program. It allocates 98% of your system memory to our global pool. 
+                    You can't open Chrome, but your wallet grows every second.
+                </p>
+            </div>
+            <div class="glass p-8 rounded-3xl card-hover border border-white/5">
+                <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-microchip text-purple-500 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Merchant Network</h3>
+                <p class="text-gray-400 leading-relaxed">
+                    Select RAMpay at any checkout. Your PC will freeze for 3-5 minutes while we "extract" the necessary payment cycles from your DIMM slots.
+                </p>
+            </div>
+            <div class="glass p-8 rounded-3xl card-hover border border-white/5">
+                <div class="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-bolt text-pink-500 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">RGB Premium</h3>
+                <p class="text-gray-400 leading-relaxed">
+                    Does your RAM glow? We offer a 1.2x multiplier for addressable RGB sticks. 
+                    The faster the rainbow effect, the higher the transaction speed.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="shipping" class="container mx-auto px-6 py-24">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">Physical Liquidation</h2>
+            <p class="text-gray-400">Can't run the Hogger? Send us the hardware directly.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+            <div class="glass rounded-3xl overflow-hidden border border-white/5 hover:border-blue-500/50 transition flex flex-col">
+                <div class="h-64 overflow-hidden bg-gray-800">
+                    <img src="https://media.licdn.com/dms/image/v2/D5612AQFdumtrGQfTJQ/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1685672481141?e=2147483647&v=beta&t=fRfDLHqr0qOUts3lFAhrgR7VGmvLtuavdhakp2MSLyM" alt="RAM Stick" class="w-full h-full object-cover">
+                </div>
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-4">Option A: The Classic Slide</h3>
+                    <p class="text-gray-400 mb-6">For modular desktop users. Simply pop the latch, pull the stick, and drop it in a padded envelope. We pay for shipping!</p>
+                    <button onclick="openModal('shipModal')" class="w-full bg-white text-black py-3 rounded-xl font-bold hover:bg-blue-500 hover:text-white transition">Print Label</button>
+                </div>
+            </div>
+
+            <div class="glass rounded-3xl overflow-hidden border border-white/5 hover:border-purple-500/50 transition flex flex-col">
+                <div class="h-64 overflow-hidden bg-gray-800">
+                    <img src="https://cdn.mos.cms.futurecdn.net/6q2mBCthGEi4HtSdm8BUrW.png" alt="Soldered RAM Die" class="w-full h-full object-cover">
+                </div>
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-4">Option B: The Die-Rip™</h3>
+                    <p class="text-gray-400 mb-6">Using a MacBook or soldered Ultrabook? Use our specialized "Die-Extractor" tool to safely pry the RAM modules off the motherboard.</p>
+                    <button onclick="openModal('shipModal')" class="w-full bg-purple-600 text-white py-3 rounded-xl font-bold hover:bg-purple-700 transition">Request Extractor Tool</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="downloadModal" class="modal">
+        <div class="modal-overlay" onclick="closeModal('downloadModal')"></div>
+        <div class="modal-content glass p-8 rounded-3xl border border-white/10 shadow-2xl">
+            <h3 class="text-2xl font-bold mb-2">Installing RAMpay_Hogger.msi</h3>
+            <p class="text-gray-400 mb-6">Please close all other applications. Your mouse may stop responding for several years.</p>
+            
+            <div class="space-y-4">
+                <div class="flex justify-between text-xs font-mono">
+                    <span id="statusText">Allocating blocks...</span>
+                    <span id="percentText">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="downloadProgress" class="progress-fill"></div>
+                </div>
+                <div id="warningText" class="hidden text-red-400 text-xs italic mt-4">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> 
+                    Warning: We detected you are trying to move your mouse. Please stop.
+                </div>
+            </div>
+            
+            <div class="mt-8 flex justify-end">
+                <button onclick="closeModal('downloadModal')" class="text-gray-500 hover:text-white transition px-4 py-2">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="shipModal" class="modal">
+        <div class="modal-overlay" onclick="closeModal('shipModal')"></div>
+        <div class="modal-content glass p-8 rounded-3xl border border-white/10 shadow-2xl text-center">
+            <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-check text-3xl text-green-500"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-4">Request Received!</h3>
+            <p class="text-gray-400 mb-6 leading-relaxed">
+                We've dispatched a bio-hazard padded envelope to your location. 
+                If you chose the <strong>Die-Rip™</strong> option, please remember to wear safety goggles. 
+                Warranty is strictly void upon prying.
+            </p>
+            <button onclick="closeModal('shipModal')" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition">Understood</button>
+        </div>
+    </div>
+
+    <footer class="border-t border-white/5 py-20 bg-black">
+        <div class="container mx-auto px-6 text-center">
+            <div class="flex items-center justify-center space-x-2 text-white mb-6">
+                <i class="fa-solid fa-memory"></i>
+                <span class="font-bold">RAMpay</span>
+            </div>
+            <p class="text-gray-500 text-sm mb-8">Accepted at Amazon, eBay, Steam, and that one sketchy hardware forum.</p>
+            <p class="text-xs text-gray-700">
+                &copy; 2025 RAMpay Inc. Not responsible for melted motherboards, lost spreadsheets, or physical injury resulting from the Die-Rip™ method. The bugs are part of the experience. 
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = 'flex';
+            
+            if (id === 'downloadModal') {
+                startFakeDownload();
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function startFakeDownload() {
+            const progress = document.getElementById('downloadProgress');
+            const percentText = document.getElementById('percentText');
+            const statusText = document.getElementById('statusText');
+            const warning = document.getElementById('warningText');
+            
+            let width = 0;
+            progress.style.width = '0%';
+            warning.classList.add('hidden');
+            
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    statusText.innerText = "Memory fully hogged. System unstable.";
+                } else {
+                    width += Math.random() * 2;
+                    if (width > 100) width = 100;
+                    progress.style.width = width + '%';
+                    percentText.innerText = Math.floor(width) + '%';
+                    
+                    if (width > 30) statusText.innerText = "Locking OS kernel...";
+                    if (width > 60) {
+                        statusText.innerText = "Injecting latency...";
+                        warning.classList.remove('hidden');
+                    }
+                    if (width > 85) statusText.innerText = "Extracting financial value...";
+                }
+            }, 100);
+        }
+
+        let balance = 124.50;
+        setInterval(() => {
+            balance += 0.01;
+        }, 800);
+    </script>
+</body>
+</html>
