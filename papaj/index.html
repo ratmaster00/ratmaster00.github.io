@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>papaj</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            transition: background-color 0.3s;
+        }
+
+        #image {
+            position: absolute;
+            width: 240px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <img id="image" src="image.jpeg" alt="papaj">
+
+    <audio id="music" autoplay loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Get elements
+        const image = document.getElementById('image');
+        const music = document.getElementById('music');
+
+        // Position and velocity
+        let x = 100;
+        let y = 100;
+        let vx = 3;
+        let vy = 2.5;
+
+        // Image dimensions (will be set after image loads)
+        let imgWidth = 240;
+        let imgHeight = 160;
+
+        // Load image to get dimensions
+        image.onload = function() {
+            imgWidth = image.width;
+            imgHeight = image.height;
+            startAnimation();
+        };
+
+        // If image is already loaded
+        if (image.complete) {
+            imgWidth = image.width;
+            imgHeight = image.height;
+            startAnimation();
+        }
+
+        // Start music automatically
+        document.addEventListener('click', function() {
+            if (music.paused) {
+                music.play().catch(e => console.log(e));
+            }
+        }, { once: true });
+
+        // Try to autoplay
+        music.play().catch(e => console.log("Click to play music"));
+
+        function startAnimation() {
+            function animate() {
+                // Move the image
+                x += vx;
+                y += vy;
+
+                // Check for edge collisions
+                const hitLeft = x <= 0;
+                const hitRight = x + imgWidth >= window.innerWidth;
+                const hitTop = y <= 0;
+                const hitBottom = y + imgHeight >= window.innerHeight;
+
+                // Bounce and change color
+                if (hitLeft || hitRight || hitTop || hitBottom) {
+                    if (hitLeft || hitRight) vx = -vx;
+                    if (hitTop || hitBottom) vy = -vy;
+
+                    // Change background color
+                    document.body.style.backgroundColor = getRandomColor();
+                }
+
+                // Update position
+                image.style.left = x + 'px';
+                image.style.top = y + 'px';
+
+                // Continue animation
+                requestAnimationFrame(animate);
+            }
+
+            // Start animation
+            animate();
+        }
+
+        function getRandomColor() {
+            const colors = [
+                '#FF5733', '#33FF57', '#3357FF', '#F333FF',
+                '#FF33A1', '#33FFF6', '#FF8333', '#8D33FF',
+                '#33FF8D', '#FF3361', '#6133FF', '#33FFC1'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (x + imgWidth > window.innerWidth) x = window.innerWidth - imgWidth;
+            if (y + imgHeight > window.innerHeight) y = window.innerHeight - imgHeight;
+        });
+    </script>
+</body>
+</html>
