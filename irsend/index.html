@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LG TV Remote</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e10;
+    --panel: #18181c;
+    --border: #2a2a32;
+    --accent: #ff4d00;
+    --text: #e8e8e8;
+    --dim: #555;
+    --btn-bg: #1f1f26;
+    --btn-hover: #2c2c38;
+    --radius: 9px;
+    --glow: 0 0 14px rgba(255,77,0,0.45);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 12px 48px;
+    background-image:
+      radial-gradient(ellipse 60% 35% at 50% 0%, rgba(255,77,0,0.07) 0%, transparent 65%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.012) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.012) 40px);
+  }
+
+  header {
+    width: 100%; max-width: 360px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; letter-spacing: 4px;
+    color: var(--accent); text-shadow: var(--glow);
+  }
+  .logo span { color: var(--text); }
+
+  #connectBtn {
+    background: transparent;
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; padding: 6px 13px;
+    border-radius: 4px; cursor: pointer; letter-spacing: 1px;
+    transition: all 0.18s;
+  }
+  #connectBtn:hover { background: var(--accent); color: #000; box-shadow: var(--glow); }
+  #connectBtn.connected { border-color: #00e676; color: #00e676; }
+  #connectBtn.connected:hover { background: #00e676; color: #000; }
+
+  #status {
+    font-size: 10px; color: var(--dim); letter-spacing: 1.5px;
+    margin-bottom: 14px; height: 14px; text-align: center; transition: color 0.25s;
+  }
+  #status.ok { color: #00e676; }
+  #status.err { color: var(--accent); }
+
+  /* ─── REMOTE SHELL ─── */
+  .remote {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 26px;
+    padding: 22px 18px 26px;
+    width: 100%; max-width: 360px;
+    display: flex; flex-direction: column; gap: 14px;
+    box-shadow: 0 28px 64px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.04);
+    position: relative; overflow: hidden;
+  }
+  .remote::before {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 56px; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  /* ─── UTILITY ─── */
+  .divider { height: 1px; background: var(--border); margin: 0 -18px; }
+
+  .row-label {
+    font-size: 9px; letter-spacing: 2px; color: var(--dim);
+    text-align: center; text-transform: uppercase;
+  }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    background: var(--btn-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; letter-spacing: 0.5px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.1s, border-color 0.1s, transform 0.1s;
+    position: relative; overflow: hidden;
+  }
+  .btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at center, rgba(255,77,0,0.3), transparent 70%);
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .btn:hover { background: var(--btn-hover); border-color: #3a3a48; }
+  .btn:active { transform: scale(0.92); border-color: var(--accent); }
+  .btn:active::after { opacity: 1; }
+
+  /* power */
+  .btn-power {
+    width: 54px; height: 54px; border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #2c1000, #160800);
+    border: 2px solid var(--accent);
+    color: var(--accent); font-size: 22px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--glow), inset 0 1px 0 rgba(255,255,255,0.08);
+    transition: all 0.12s;
+  }
+  .btn-power:active { transform: scale(0.91); }
+
+  /* colored buttons */
+  .btn.red    { border-color: #c0392b; color: #ff6b6b; }
+  .btn.green  { border-color: #27ae60; color: #6bffaa; }
+  .btn.yellow { border-color: #d4a017; color: #ffe066; }
+  .btn.blue   { border-color: #2980b9; color: #6bb8ff; }
+  .btn.red:hover    { background: rgba(192,57,43,0.2); }
+  .btn.green:hover  { background: rgba(39,174,96,0.2); }
+  .btn.yellow:hover { background: rgba(212,160,23,0.2); }
+  .btn.blue:hover   { background: rgba(41,128,185,0.2); }
+
+  /* ─── LAYOUTS ─── */
+  .power-row { display: flex; justify-content: space-between; align-items: center; }
+  .power-side { display: flex; flex-direction: column; gap: 6px; width: 80px; }
+  .power-side .btn { height: 36px; font-size: 10px; }
+
+  /* 3-col equal */
+  .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; }
+  .grid3 .btn { height: 38px; }
+
+  /* 2-col */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .grid2 .btn { height: 38px; }
+
+  /* vol/ch */
+  .volch { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .vc-group { display: flex; flex-direction: column; gap: 4px; }
+  .vc-label { font-size: 9px; color: var(--dim); letter-spacing: 1.5px; text-align: center; }
+  .vc-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .vc-pair .btn { height: 44px; font-size: 16px; }
+
+  /* dpad */
+  .dpad { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 6px; width: 188px; margin: 0 auto; }
+  .dpad .btn { height: 54px; font-size: 17px; }
+  .dpad .btn.ok { font-size: 11px; letter-spacing: 1px; border-color: #3a3a48; }
+  .dpad .sp { background: transparent; border: none; pointer-events: none; }
+
+  /* numpad */
+  .numpad { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; }
+  .numpad .btn { height: 46px; font-size: 15px; }
+  .numpad .btn.span2 { grid-column: span 2; }
+
+  /* media */
+  .media { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; }
+  .media .btn { height: 38px; font-size: 16px; }
+
+  /* colored */
+  .colors { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; }
+  .colors .btn { height: 36px; font-size: 10px; }
+
+  /* flash */
+  @keyframes flash { 0% { background: rgba(255,77,0,0.5); } 100% { background: var(--btn-bg); } }
+  .btn.flash { animation: flash 0.28s ease-out; }
+
+  .no-serial {
+    display: none;
+    background: rgba(255,77,0,0.08);
+    border: 1px solid rgba(255,77,0,0.3);
+    border-radius: 8px; padding: 14px;
+    font-size: 11px; line-height: 1.8; color: #bbb; text-align: center;
+    max-width: 360px; margin-bottom: 10px;
+  }
+  .no-serial a { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">LG<span>CTRL</span></div>
+  <button id="connectBtn">⚡ CONNECT</button>
+</header>
+<div id="status">DISCONNECTED</div>
+<div id="noSerial" class="no-serial">
+  ⚠️ Web Serial not supported.<br>Use <strong>Chrome</strong> or <strong>Edge</strong> on desktop/Android.<br>
+  <a href="https://caniuse.com/web-serial" target="_blank">Check browser support →</a>
+</div>
+
+<div class="remote">
+
+  <!-- POWER + ENERGY + INPUT -->
+  <div class="power-row">
+    <div class="power-side">
+      <button class="btn" data-cmd="ENERGY">ENERGY</button>
+      <button class="btn" data-cmd="TVRAD">TV/RAD</button>
+    </div>
+    <button class="btn-power" data-cmd="POWER">⏻</button>
+    <div class="power-side">
+      <button class="btn" data-cmd="INPUT">INPUT</button>
+      <button class="btn" data-cmd="AV">AV MODE</button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- VOL + CH + MUTE -->
+  <div class="volch">
+    <div class="vc-group">
+      <div class="vc-label">VOLUME</div>
+      <div class="vc-pair">
+        <button class="btn" data-cmd="VOL-">－</button>
+        <button class="btn" data-cmd="VOL+">＋</button>
+      </div>
+    </div>
+    <div class="vc-group">
+      <div class="vc-label">CHANNEL</div>
+      <div class="vc-pair">
+        <button class="btn" data-cmd="CH-">－</button>
+        <button class="btn" data-cmd="CH+">＋</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <button class="btn" data-cmd="MUTE">MUTE</button>
+    <button class="btn" data-cmd="GUIDE">GUIDE</button>
+    <button class="btn" data-cmd="LIST">LIST</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- D-PAD -->
+  <div class="row-label">Navigate</div>
+  <div class="dpad">
+    <div class="sp"></div>
+    <button class="btn" data-cmd="UP">▲</button>
+    <div class="sp"></div>
+    <button class="btn" data-cmd="LEFT">◀</button>
+    <button class="btn ok" data-cmd="OK">OK</button>
+    <button class="btn" data-cmd="RIGHT">▶</button>
+    <div class="sp"></div>
+    <button class="btn" data-cmd="DOWN">▼</button>
+    <div class="sp"></div>
+  </div>
+
+  <div class="grid3">
+    <button class="btn" data-cmd="BACK">↩ BACK</button>
+    <button class="btn" data-cmd="HOME">⌂ HOME</button>
+    <button class="btn" data-cmd="INFO">ℹ INFO</button>
+  </div>
+
+  <div class="grid3">
+    <button class="btn" data-cmd="EXIT">EXIT</button>
+    <button class="btn" data-cmd="FAV">★ FAV</button>
+    <button class="btn" data-cmd="RATIO">RATIO</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- NUMPAD -->
+  <div class="row-label">Channel Direct</div>
+  <div class="numpad">
+    <button class="btn" data-cmd="1">1</button>
+    <button class="btn" data-cmd="2">2</button>
+    <button class="btn" data-cmd="3">3</button>
+    <button class="btn" data-cmd="4">4</button>
+    <button class="btn" data-cmd="5">5</button>
+    <button class="btn" data-cmd="6">6</button>
+    <button class="btn" data-cmd="7">7</button>
+    <button class="btn" data-cmd="8">8</button>
+    <button class="btn" data-cmd="9">9</button>
+    <button class="btn" data-cmd="QUICKVIEW">Q.VIEW</button>
+    <button class="btn" data-cmd="0">0</button>
+    <button class="btn" data-cmd="LIST">LIST</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TELETEXT -->
+  <div class="grid3">
+    <button class="btn" data-cmd="TEXT">TEXT</button>
+    <button class="btn" data-cmd="TOPOT">T.OPT</button>
+    <button class="btn" data-cmd="SUBTITLE">SUBT.</button>
+  </div>
+  <div class="grid2">
+    <button class="btn" data-cmd="AD">AD</button>
+    <button class="btn" data-cmd="GUIDE">GUIDE</button>
+  </div>
+
+  <!-- COLORED BUTTONS -->
+  <div class="colors">
+    <button class="btn red"    data-cmd="RED">RED</button>
+    <button class="btn green"  data-cmd="GREEN">GRN</button>
+    <button class="btn yellow" data-cmd="YELLOW">YLW</button>
+    <button class="btn blue"   data-cmd="BLUE">BLU</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- MEDIA CONTROLS -->
+  <div class="row-label">Media</div>
+  <div class="media">
+    <button class="btn" data-cmd="REW">⏮</button>
+    <button class="btn" data-cmd="PLAY">▶</button>
+    <button class="btn" data-cmd="PAUSE">⏸</button>
+    <button class="btn" data-cmd="FORWARD">⏭</button>
+  </div>
+  <div class="grid3">
+    <button class="btn" data-cmd="STOP">⏹ STOP</button>
+    <button class="btn" data-cmd="PLAY">▶ PLAY</button>
+    <button class="btn" data-cmd="PAUSE">⏸ PAUS</button>
+  </div>
+
+</div>
+
+<script>
+  const connectBtn = document.getElementById('connectBtn');
+  const statusEl   = document.getElementById('status');
+  const noSerial   = document.getElementById('noSerial');
+
+  let port   = null;
+  let writer = null;
+
+  if (!('serial' in navigator)) {
+    noSerial.style.display = 'block';
+    connectBtn.disabled = true;
+    connectBtn.style.opacity = '0.4';
+  }
+
+  connectBtn.addEventListener('click', async () => {
+    if (port) { await disconnect(); } else { await connect(); }
+  });
+
+  async function connect() {
+    try {
+      port = await navigator.serial.requestPort();
+      await port.open({ baudRate: 9600 });
+      const enc = new TextEncoderStream();
+      enc.readable.pipeTo(port.writable);
+      writer = enc.writable.getWriter();
+      setStatus('CONNECTED', 'ok');
+      connectBtn.textContent = '✕ DISCONNECT';
+      connectBtn.classList.add('connected');
+    } catch (e) {
+      port = null; writer = null;
+      setStatus(e.name === 'NotFoundError' ? 'CANCELLED' : 'FAILED', e.name === 'NotFoundError' ? '' : 'err');
+    }
+  }
+
+  async function disconnect() {
+    try { if (writer) { await writer.close(); writer = null; } await port.close(); } catch (_) {}
+    port = null;
+    setStatus('DISCONNECTED', '');
+    connectBtn.textContent = '⚡ CONNECT';
+    connectBtn.classList.remove('connected');
+  }
+
+  async function send(cmd) {
+    if (!writer) { setStatus('NOT CONNECTED — press CONNECT first', 'err'); return; }
+    try {
+      await writer.write(cmd + '\n');
+      setStatus('SENT: ' + cmd, 'ok');
+    } catch (e) {
+      setStatus('SEND ERROR', 'err');
+    }
+  }
+
+  function setStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = type || '';
+  }
+
+  // Wire all buttons
+  document.querySelectorAll('[data-cmd]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cmd = btn.dataset.cmd;
+      send(cmd);
+      btn.classList.remove('flash');
+      void btn.offsetWidth;
+      btn.classList.add('flash');
+    });
+  });
+
+  // Keyboard shortcuts
+  const keyMap = {
+    'ArrowUp': 'UP', 'ArrowDown': 'DOWN', 'ArrowLeft': 'LEFT', 'ArrowRight': 'RIGHT',
+    'Enter': 'OK', 'Backspace': 'BACK', 'Escape': 'EXIT',
+    'm': 'MUTE', 'p': 'PLAY', 's': 'STOP', ' ': 'PAUSE',
+    'h': 'HOME', 'i': 'INFO',
+  };
+  for (let i = 0; i <= 9; i++) keyMap[String(i)] = String(i);
+
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    const cmd = keyMap[e.key];
+    if (cmd) {
+      e.preventDefault();
+      send(cmd);
+      const btn = document.querySelector(`[data-cmd="${cmd}"]`);
+      if (btn) { btn.classList.remove('flash'); void btn.offsetWidth; btn.classList.add('flash'); }
+    }
+  });
+</script>
+</body>
+</html>
