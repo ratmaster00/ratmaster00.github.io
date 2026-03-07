@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Software Privacy Display DEMO</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #000;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, sans-serif;
+      color: #fff;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+    h1 { font-size: 1.1rem; font-weight: 500; letter-spacing: 0.03em; opacity: 0.9; text-align: center; }
+    .image-wrap {
+      position: relative;
+      width: min(80vw, 340px);
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .image-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    #overlay { position: absolute; inset: 0; background: #000; opacity: 0; transition: opacity 0.05s linear; }
+    #warning {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #111;
+      z-index: 10;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 1rem;
+      padding: 2rem;
+    }
+    #warning.show { display: flex; }
+    #warning p { color: #aaa; font-size: 0.9rem; line-height: 1.6; max-width: 300px; }
+    #warning button {
+      margin-top: 0.5rem;
+      background: transparent;
+      border: 1px solid #444;
+      color: #aaa;
+      font-size: 0.8rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="warning">
+    <p>⚠️ This demo requires <strong>Chrome on Android</strong> or <strong>Safari on iOS</strong> for tilt detection.</p>
+    <button onclick="document.getElementById('warning').classList.remove('show')">Continue anyway</button>
+  </div>
+
+  <h1>Software Privacy Display DEMO</h1>
+
+  <div class="image-wrap">
+    <img src="https://soggy.cat/static/ssoggycat/main/images/soggycat.webp" alt="Soggy Cat">
+    <div id="overlay"></div>
+  </div>
+
+  <script>
+    const DEADZONE = 15;
+    const overlay = document.getElementById('overlay');
+
+    function handleOrientation(e) {
+      const abs = Math.abs(e.gamma ?? 0);
+      overlay.style.opacity = abs <= DEADZONE ? 0
+        : Math.min((abs - DEADZONE) / (90 - DEADZONE), 1);
+    }
+
+    function start() {
+      if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(s => s === 'granted' && window.addEventListener('deviceorientation', handleOrientation))
+          .catch(() => {});
+      } else {
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+    }
+
+    if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      document.getElementById('warning').classList.add('show');
+    } else {
+      start();
+    }
+
+    document.addEventListener('click', () => {
+      if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(s => s === 'granted' && window.addEventListener('deviceorientation', handleOrientation))
+          .catch(() => {});
+      }
+    }, { once: true });
+  </script>
+</body>
+</html>
