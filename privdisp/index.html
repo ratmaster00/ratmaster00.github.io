@@ -75,7 +75,7 @@
     function handleOrientation(e) {
       const abs = Math.abs(e.gamma ?? 0);
       overlay.style.opacity = abs <= DEADZONE ? 0
-        : Math.min((abs - DEADZONE) / (90 - DEADZONE), 1);
+        : Math.min((abs - DEADZONE) / (50 - DEADZONE), 1);
     }
 
     function start() {
