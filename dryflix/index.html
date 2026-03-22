@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DryFlix – Watch Paint Dry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080610;
+  --surface: #100d1c;
+  --card: #16112a;
+  --border: rgba(140, 80, 255, 0.12);
+  --purple: #8c50ff;
+  --purple-bright: #b47aff;
+  --purple-glow: rgba(140,80,255,0.35);
+  --red: #e53535;
+  --text: #f0ebff;
+  --muted: #8a7dab;
+  --tag-bg: rgba(140,80,255,0.18);
+  --nav-h: 56px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 8px);
+}
+
+/* TOP NAV */
+nav.topnav {
+  position: sticky; top: 0; z-index: 200;
+  height: var(--nav-h);
+  background: rgba(8,6,16,0.96);
+  backdrop-filter: blur(14px);
+  display: flex; align-items: center;
+  padding: 0 16px; gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.75rem; letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #fff 30%, var(--purple-bright));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  flex-shrink: 0;
+}
+.logo span { -webkit-text-fill-color: var(--purple); }
+
+.live-pill {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 6px;
+  background: var(--tag-bg); border: 1px solid var(--border);
+  border-radius: 20px; padding: 4px 11px;
+  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.06em;
+  color: var(--purple-bright); text-transform: uppercase; flex-shrink: 0;
+}
+.live-dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: blink 1.4s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* HERO */
+.hero { position: relative; background: var(--surface); }
+.hero-glow {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(140,80,255,0.2) 0%, transparent 70%);
+}
+.video-wrap {
+  position: relative; z-index: 1; width: 100%; aspect-ratio: 16/9; background: #000; overflow: hidden;
+}
+.video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
+/* PLAY CARD (replaces iframe) */
+.play-card {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; cursor: pointer; text-decoration: none;
+  background: linear-gradient(160deg, #1a0d3d 0%, #0d0818 50%, #1a0530 100%);
+  transition: background 0.3s;
+}
+.play-card:hover { background: linear-gradient(160deg, #220f50 0%, #110a22 50%, #220640 100%); }
+.play-card:hover .play-btn-circle { transform: scale(1.1); box-shadow: 0 0 50px var(--purple-glow), 0 0 0 8px rgba(140,80,255,0.15); }
+
+/* Animated paint drip bg */
+.paint-bg {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+.paint-drip {
+  position: absolute; top: 0; border-radius: 0 0 50% 50%;
+  background: var(--purple); opacity: 0.07;
+  animation: drip 3s ease-in-out infinite alternate;
+}
+@keyframes drip { from { height: 18px; } to { height: 42px; } }
+
+.play-btn-circle {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: var(--purple);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; padding-left: 4px;
+  box-shadow: 0 0 30px var(--purple-glow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative; z-index: 1;
+}
+.play-card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.4rem, 5vw, 2.2rem);
+  letter-spacing: 0.06em;
+  color: #fff; position: relative; z-index: 1;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+}
+.play-card-sub {
+  font-size: 0.78rem; color: var(--muted);
+  position: relative; z-index: 1; letter-spacing: 0.04em;
+  display: flex; align-items: center; gap: 8px;
+}
+.yt-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 5px; padding: 3px 9px; font-size: 0.72rem; color: #ccc;
+}
+.yt-icon { color: #ff4444; font-size: 1rem; }
+
+.hero-info {
+  position: relative; z-index: 1;
+  padding: 16px 16px 20px;
+  background: linear-gradient(to bottom, var(--surface) 0%, var(--bg) 100%);
+}
+
+.badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.badge {
+  font-size: 0.68rem; font-weight: 500; letter-spacing: 0.05em;
+  text-transform: uppercase; padding: 3px 9px; border-radius: 4px;
+}
+.b-new  { background: var(--purple); color: #fff; }
+.b-genre{ background: var(--tag-bg); color: var(--purple-bright); border: 1px solid var(--border); }
+.b-rate { background: rgba(229,53,53,0.15); color: #ff7070; border: 1px solid rgba(229,53,53,0.2); }
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 8vw, 3.2rem); letter-spacing: 0.02em; line-height: 1; margin-bottom: 6px;
+}
+
+.hero-meta {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 0.78rem; color: var(--muted); margin-bottom: 12px;
+}
+.dot { opacity: 0.4; }
+.stars { color: var(--purple-bright); letter-spacing: -2px; font-size: 0.9rem; }
+
+.hero-desc {
+  font-size: 0.875rem; color: rgba(240,235,255,0.62); font-weight: 300;
+  line-height: 1.65; margin-bottom: 16px; max-width: 580px;
+}
+
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 11px 20px; border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500;
+  cursor: pointer; border: none; transition: all 0.18s; text-decoration: none; flex-shrink: 0;
+}
+.btn-p { background: var(--purple); color: #fff; box-shadow: 0 4px 20px var(--purple-glow); }
+.btn-p:hover { background: var(--purple-bright); transform: translateY(-1px); }
+.btn-s { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid rgba(255,255,255,0.1); }
+.btn-s:hover { background: rgba(255,255,255,0.13); }
+
+/* TIMER BANNER */
+.timer-banner {
+  margin: 8px 16px 0;
+  padding: 12px 16px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  display: flex; align-items: center; gap: 12px;
+}
+.t-icon { font-size: 1.35rem; }
+.t-label { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+.t-value { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.05em; color: var(--purple-bright); }
+.t-right { margin-left: auto; font-size: 0.7rem; color: var(--muted); text-align: right; line-height: 1.45; }
+#patience { color: var(--purple-bright); font-size: 0.72rem; }
+
+/* SECTIONS */
+.section { padding: 24px 16px 6px; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+.sec-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.04em; }
+.sec-link { font-size: 0.75rem; color: var(--purple-bright); text-decoration: none; opacity: 0.8; }
+
+/* CARD ROW */
+.card-row {
+  display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.card-row::-webkit-scrollbar { display: none; }
+
+.card {
+  flex-shrink: 0; width: 138px;
+  background: var(--card); border-radius: 8px; border: 1px solid var(--border);
+  overflow: hidden; cursor: pointer; transition: transform 0.18s, border-color 0.18s;
+}
+.card:hover { transform: scale(1.03); border-color: rgba(140,80,255,0.38); }
+
+.card-thumb {
+  width: 100%; aspect-ratio: 16/9;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; position: relative; overflow: hidden;
+}
+.ct-bg { position: absolute; inset: 0; }
+.ct-em { position: relative; z-index: 1; }
+.card-body { padding: 8px 10px 10px; }
+.card-title { font-size: 0.77rem; font-weight: 500; line-height: 1.3; margin-bottom: 3px; }
+.card-sub { font-size: 0.67rem; color: var(--muted); }
+
+.g1{background:linear-gradient(135deg,#1a0d3d,#4a1a8a)}
+.g2{background:linear-gradient(135deg,#0d1a3d,#1a4a7a)}
+.g3{background:linear-gradient(135deg,#1a1a0d,#4a3a1a)}
+.g4{background:linear-gradient(135deg,#0d2a1a,#1a5a3a)}
+.g5{background:linear-gradient(135deg,#2a0d1a,#6a1a3a)}
+.g6{background:linear-gradient(135deg,#1a0a0a,#5a1a1a)}
+
+/* DETAILS GRID */
+.details-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 4px 16px 8px;
+}
+.det-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+.det-label { font-size: 0.67rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+.det-val { font-size: 0.9rem; font-weight: 500; }
+.det-val.ac { color: var(--purple-bright); }
+
+/* REVIEWS */
+.reviews-wrap { padding: 0 16px; }
+.rev-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+.rev-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 600; flex-shrink: 0; }
+.rev-name { font-size: 0.85rem; font-weight: 500; }
+.rev-meta { display: flex; gap: 8px; align-items: center; margin-top: 2px; }
+.rev-stars { color: var(--purple-bright); font-size: 0.8rem; letter-spacing: -2px; }
+.rev-date { font-size: 0.68rem; color: var(--muted); }
+.rev-text { font-size: 0.82rem; color: rgba(240,235,255,0.63); line-height: 1.55; font-style: italic; }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 12px 16px; }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  height: calc(var(--nav-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: rgba(8,6,16,0.97); backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: flex-start; padding-top: 6px;
+}
+.nav-items { display: flex; width: 100%; justify-content: space-around; }
+.nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 0.6rem; color: var(--muted); padding: 4px 14px; cursor: pointer;
+  transition: color 0.15s; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.nav-item.active { color: var(--purple-bright); }
+.nav-item:hover { color: var(--text); }
+.nav-icon { font-size: 1.25rem; line-height: 1; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+.hero-info      { animation: fadeUp 0.5s 0.05s ease both; }
+.timer-banner   { animation: fadeUp 0.5s 0.12s ease both; }
+.section        { animation: fadeUp 0.5s 0.18s ease both; }
+.details-grid   { animation: fadeUp 0.5s 0.24s ease both; }
+.reviews-wrap   { animation: fadeUp 0.5s 0.30s ease both; }
+
+/* DESKTOP */
+@media (min-width: 700px) {
+  body { padding-bottom: 0; }
+  .bottom-nav { display: none; }
+  nav.topnav, .hero-info, .timer-banner,
+  .section, .details-grid, .reviews-wrap, .divider {
+    padding-left: clamp(16px, 5vw, 48px);
+    padding-right: clamp(16px, 5vw, 48px);
+  }
+  .timer-banner { margin-left: clamp(16px,5vw,48px); margin-right: clamp(16px,5vw,48px); }
+  .details-grid { grid-template-columns: repeat(4,1fr); }
+  .card { width: 175px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="logo">Dry<span>Flix</span></div>
+  <div class="live-pill"><div class="live-dot"></div> Streaming Now</div>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="video-wrap">
+    <a class="play-card" href="https://www.youtube.com/watch?v=PLOPygVcaVE" target="_blank" rel="noopener">
+      <div class="paint-bg">
+        <div class="paint-drip" style="left:8%;width:28px;animation-delay:0s;animation-duration:2.8s;"></div>
+        <div class="paint-drip" style="left:21%;width:18px;animation-delay:0.6s;animation-duration:3.4s;"></div>
+        <div class="paint-drip" style="left:37%;width:34px;animation-delay:0.2s;animation-duration:2.5s;"></div>
+        <div class="paint-drip" style="left:52%;width:22px;animation-delay:1s;animation-duration:3.8s;"></div>
+        <div class="paint-drip" style="left:67%;width:16px;animation-delay:0.4s;animation-duration:3.1s;"></div>
+        <div class="paint-drip" style="left:80%;width:30px;animation-delay:0.8s;animation-duration:2.9s;"></div>
+        <div class="paint-drip" style="left:92%;width:20px;animation-delay:0.1s;animation-duration:3.6s;"></div>
+      </div>
+      <div class="play-btn-circle">▶</div>
+      <div class="play-card-title">Watch Paint Dry</div>
+      <div class="play-card-sub">
+        <span>10 hours · Full Film</span>
+        <span class="yt-badge"><span class="yt-icon">▶</span> Open on YouTube</span>
+      </div>
+    </a>
+  </div>
+  <div class="hero-info">
+    <div class="badges">
+      <span class="badge b-new">New Release</span>
+      <span class="badge b-genre">Slow Cinema</span>
+      <span class="badge b-genre">Mindfulness</span>
+      <span class="badge b-rate">TV-G</span>
+    </div>
+    <h1 class="hero-title">Watch Paint Dry</h1>
+    <div class="hero-meta">
+      <span class="stars">★★★★★</span>
+      <span class="dot">·</span><span>2024</span>
+      <span class="dot">·</span><span>∞ hrs</span>
+      <span class="dot">·</span><span>4K Ultra HD</span>
+    </div>
+    <p class="hero-desc">
+      A groundbreaking journey into the art of patience. Watch as freshly applied paint
+      surrenders to the air, molecule by molecule, in this critically acclaimed
+      slow-cinema masterpiece. Described as "genuinely life-changing" by no one in particular.
+    </p>
+    <div class="actions">
+      <button class="btn btn-p">▶ Play</button>
+      <button class="btn btn-s">＋ My List</button>
+      <button class="btn btn-s">↗ Share</button>
+    </div>
+  </div>
+</section>
+
+<div class="timer-banner">
+  <div class="t-icon">🎬</div>
+  <div>
+    <div class="t-label">Session Watch Time</div>
+    <div class="t-value" id="timer">0:00:00</div>
+  </div>
+  <div class="t-right">
+    <div id="patience">Just started</div>
+    <div>patience level</div>
+  </div>
+</div>
+
+<!-- MORE LIKE THIS -->
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-title">More Like This</span>
+    <a href="#" class="sec-link">See all</a>
+  </div>
+  <div class="card-row">
+    <div class="card"><div class="card-thumb"><div class="ct-bg g1"></div><span class="ct-em">🪣</span></div><div class="card-body"><div class="card-title">Watch Glue Dry</div><div class="card-sub">2023 · Thriller</div></div></div>
+    <div class="card"><div class="card-thumb"><div class="ct-bg g2"></div><span class="ct-em">🌊</span></div><div class="card-body"><div class="card-title">Watch Water Boil</div><div class="card-sub">2024 · Drama</div></div></div>
+    <div class="card"><div class="card-thumb"><div class="ct-bg g3"></div><span class="ct-em">🌱</span></div><div class="card-body"><div class="card-title">Grass Growing Live</div><div class="card-sub">2022 · Documentary</div></div></div>
+    <div class="card"><div class="card-thumb"><div class="ct-bg g4"></div><span class="ct-em">🕯️</span></div><div class="card-body"><div class="card-title">Candle Melting S1</div><div class="card-sub">2021 · Series</div></div></div>
+    <div class="card"><div class="card-thumb"><div class="ct-bg g5"></div><span class="ct-em">🧊</span></div><div class="card-body"><div class="card-title">Ice Melting: Uncut</div><div class="card-sub">2023 · Epic</div></div></div>
+    <div class="card"><div class="card-thumb"><div class="ct-bg g6"></div><span class="ct-em">🍞</span></div><div class="card-body"><div class="card-title">Bread Rising</div><div class="card-sub">2024 · Culinary</div></div></div>
+  </div>
+</div>
+
+<!-- TRENDING -->
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-title">Trending in Slow Cinema</span>
+  </div>
+  <div class="card-row">
+    <div class="card"><div class="card-thumb"><div class="ct-bg g2"></div><span class="ct-em">☁️</span></div><div class="card-body"><div class="card-title">Clouds Moving: 8 hrs</div><div class="card-sub">2023 · Ambient</div></div></div>
+    <div class="card"><div class="card-thumb"><div class="ct-bg g5"></div><span class="ct-em">🌅</span></div><div class="card-body"><div class="card-title">Sunset, Uninterrupted</div><div class="card-sub">2024 · Nature</div></div></div>
+    <div class="card"><div class="card-thumb"><div class="ct-bg g3"></div><span class="ct-em">🫙</span></div><div class="card-body"><div class="card-title">Jam Setting: Plum</div><div class="card-sub">2022 · Culinary</div></div></div>
+    <div class="card"><div class="card-thumb"><div class="ct-bg g1"></div><span class="ct-em">🪨</span></div><div class="card-body"><div class="card-title">Rock: A Biography</div><div class="card-sub">2024 · Documentary</div></div></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- DETAILS -->
+<div class="details-grid">
+  <div class="det-card"><div class="det-label">Director</div><div class="det-val">The Weather</div></div>
+  <div class="det-card"><div class="det-label">Genre</div><div class="det-val ac">Slow Cinema</div></div>
+  <div class="det-card"><div class="det-label">Runtime</div><div class="det-val">∞ hrs</div></div>
+  <div class="det-card"><div class="det-label">Audio</div><div class="det-val ac">Dolby Silence™</div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- REVIEWS -->
+<div class="section" style="padding-bottom:12px;">
+  <div class="sec-head"><span class="sec-title">Reviews</span></div>
+</div>
+<div class="reviews-wrap">
+  <div class="rev-card">
+    <div class="rev-head">
+      <div class="avatar" style="background:linear-gradient(135deg,#5c30c0,#b47aff);color:#fff;">KW</div>
+      <div><div class="rev-name">KevWatchesThings</div><div class="rev-meta"><span class="rev-stars">★★★★★</span><span class="rev-date">2 days ago</span></div></div>
+    </div>
+    <p class="rev-text">"I came in skeptical. Three hours later I had achieved a clarity of mind I haven't felt since childhood. 10/10 would stare again."</p>
+  </div>
+  <div class="rev-card">
+    <div class="rev-head">
+      <div class="avatar" style="background:linear-gradient(135deg,#1a4a7a,#50b0ff);color:#fff;">SL</div>
+      <div><div class="rev-name">SlowLifer99</div><div class="rev-meta"><span class="rev-stars">★★★★★</span><span class="rev-date">1 week ago</span></div></div>
+    </div>
+    <p class="rev-text">"Better than anything else streaming this year. The pacing is *chef's kiss*. Nothing happens and it is PERFECT."</p>
+  </div>
+  <div class="rev-card">
+    <div class="rev-head">
+      <div class="avatar" style="background:linear-gradient(135deg,#4a1a0d,#c05030);color:#fff;">ZP</div>
+      <div><div class="rev-name">Zara P.</div><div class="rev-meta"><span class="rev-stars">★★★★☆</span><span class="rev-date">3 weeks ago</span></div></div>
+    </div>
+    <p class="rev-text">"Docking one star because it ended. When the paint finally dries, you feel the loss deeply. A bold directorial choice."</p>
+  </div>
+</div>
+
+<div style="height:16px;"></div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="nav-items">
+    <div class="nav-item active"><span class="nav-icon">🏠</span>Home</div>
+    <div class="nav-item"><span class="nav-icon">🔍</span>Search</div>
+    <div class="nav-item"><span class="nav-icon">▶️</span>My List</div>
+    <div class="nav-item"><span class="nav-icon">👤</span>Profile</div>
+  </div>
+</nav>
+
+<script>
+  const timerEl = document.getElementById('timer');
+  const patienceEl = document.getElementById('patience');
+  const start = Date.now();
+  const levels = [[0,'Just started'],[30,'Getting there…'],[120,'Committed'],[300,'Enlightened'],[600,'Transcendent'],[1800,'One with the paint'],[3600,'Legendary']];
+  function fmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`}
+  setInterval(()=>{
+    const s=Math.floor((Date.now()-start)/1000);
+    timerEl.textContent=fmt(s);
+    let lbl=levels[0][1];
+    for(const[t,l]of levels){if(s>=t)lbl=l;}
+    patienceEl.textContent=lbl;
+  },1000);
+</script>
+</body>
+</html>
