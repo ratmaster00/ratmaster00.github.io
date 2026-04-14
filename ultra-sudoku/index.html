@@ -25,8 +25,7 @@
 
 body {
   background: var(--paper);
-  background-image:
-    repeating-linear-gradient(transparent, transparent 27px, var(--ruled) 27px, var(--ruled) 28px);
+  background-image: repeating-linear-gradient(transparent, transparent 27px, var(--ruled) 27px, var(--ruled) 28px);
   min-height: 100vh;
   font-family: 'Nunito', sans-serif;
   color: var(--ink);
@@ -36,216 +35,69 @@ body {
   align-items: center;
 }
 
-/* Header */
-.header {
-  text-align: center;
-  margin-bottom: 20px;
+/* Lang Switcher */
+.lang-switch {
+  position: absolute;
+  top: 15px;
+  right: 15px;
 }
-.header h1 {
-  font-family: 'Kalam', cursive;
-  font-size: clamp(1.6rem, 5vw, 2.4rem);
-  color: var(--blue);
-  line-height: 1.1;
-}
-.header .sub {
-  font-size: 0.78rem;
-  color: #666;
-  margin-top: 4px;
-  font-style: italic;
-}
-.header .tag {
-  display: inline-block;
-  background: var(--blue);
-  color: #fff;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 2px 10px;
-  border-radius: 12px;
-  margin-top: 6px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+.lang-switch button {
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  box-shadow: 1px 1px 0 var(--ink);
 }
 
-/* Rules box */
-.rules {
-  background: #fff;
-  border-left: 4px solid var(--gold);
-  border-radius: 0 6px 6px 0;
-  padding: 10px 14px;
-  margin-bottom: 20px;
-  max-width: 620px;
-  width: 100%;
-  font-size: 0.76rem;
-  line-height: 1.65;
-  color: #333;
-  box-shadow: 2px 2px 0 var(--ruled);
-}
+.header { text-align: center; margin-bottom: 20px; }
+.header h1 { font-family: 'Kalam', cursive; font-size: clamp(1.6rem, 5vw, 2.4rem); color: var(--blue); line-height: 1.1; }
+.header .sub { font-size: 0.78rem; color: #666; margin-top: 4px; font-style: italic; }
+.header .tag { display: inline-block; background: var(--blue); color: #fff; font-size: 0.68rem; font-weight: 700; padding: 2px 10px; border-radius: 12px; margin-top: 6px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+.rules { background: #fff; border-left: 4px solid var(--gold); border-radius: 0 6px 6px 0; padding: 10px 14px; margin-bottom: 20px; max-width: 620px; width: 100%; font-size: 0.76rem; line-height: 1.65; color: #333; box-shadow: 2px 2px 0 var(--ruled); }
 .rules strong { color: var(--gold); }
 
-/* Board */
-.board-wrap {
-  overflow-x: auto;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 16px;
-}
-
-table.board {
-  border-collapse: collapse;
-  border: 3px solid var(--box-border);
-  background: #fff;
-  box-shadow: 4px 4px 0 #ccc, 8px 8px 0 #e0e0e0;
-}
-
-td {
-  width: 68px;
-  height: 68px;
-  border: 1px solid var(--cell-border);
-  text-align: center;
-  vertical-align: middle;
-  position: relative;
-  background: #fff;
-}
-
-/* thick box borders */
-td.br { border-right:  2.5px solid var(--box-border); }
+.board-wrap { overflow-x: auto; width: 100%; display: flex; justify-content: center; margin-bottom: 16px; }
+table.board { border-collapse: collapse; border: 3px solid var(--box-border); background: #fff; box-shadow: 4px 4px 0 #ccc; }
+td { width: 68px; height: 68px; border: 1px solid var(--cell-border); text-align: center; vertical-align: middle; position: relative; background: #fff; }
+td.br { border-right: 2.5px solid var(--box-border); }
 td.bb { border-bottom: 2.5px solid var(--box-border); }
+td.given { background: var(--given-bg); }
 
-/* Given cells — filled with clue expression */
-td.given {
-  background: var(--given-bg);
-}
+.clue { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 3px; }
+.clue .expr { font-size: 0.80rem; font-weight: 700; color: var(--blue); line-height: 1.25; white-space: nowrap; }
+.clue .note { font-size: 0.50rem; color: #6688aa; font-style: italic; margin-top: 1px; }
 
-.clue {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 3px;
-  pointer-events: none;
-}
-.clue .expr {
-  font-size: 0.80rem;
-  font-weight: 700;
-  color: var(--blue);
-  line-height: 1.25;
-  white-space: nowrap;
-}
-.clue .note {
-  font-size: 0.50rem;
-  color: #6688aa;
-  font-style: italic;
-  margin-top: 1px;
-}
-
-/* Input cells */
-td.inp input {
-  width: 100%;
-  height: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: 'Kalam', cursive;
-  font-size: 1.4rem;
-  font-weight: 700;
-  text-align: center;
-  color: var(--ink);
-  cursor: text;
-}
-td.inp input:focus {
-  background: #fffbf0;
-  box-shadow: inset 0 0 0 2px var(--gold);
-}
-td.inp input.ok  { color: var(--green); }
+td.inp input { width: 100%; height: 100%; border: none; outline: none; background: transparent; font-family: 'Kalam', cursive; font-size: 1.4rem; font-weight: 700; text-align: center; color: var(--ink); }
+td.inp input.ok { color: var(--green); }
 td.inp input.bad { color: var(--red); background: #fff5f5; }
 
-/* Controls */
-.controls {
-  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-  margin-bottom: 12px;
-}
-button {
-  font-family: 'Nunito', sans-serif;
-  font-weight: 700;
-  font-size: 0.82rem;
-  padding: 8px 20px;
-  border: 2px solid var(--ink);
-  border-radius: 4px;
-  cursor: pointer;
-  background: #fff;
-  color: var(--ink);
-  box-shadow: 2px 2px 0 var(--ink);
-  transition: all 0.1s;
-}
+.controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px; }
+button { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.82rem; padding: 8px 20px; border: 2px solid var(--ink); border-radius: 4px; cursor: pointer; background: #fff; color: var(--ink); box-shadow: 2px 2px 0 var(--ink); transition: all 0.1s; }
 button:hover { background: var(--ink); color: #fff; }
-button:active { box-shadow: none; transform: translate(2px,2px); }
 button.primary { background: var(--blue); color: #fff; border-color: var(--blue); box-shadow: 2px 2px 0 #0e3d6e; }
-button.primary:hover { background: #0e3d6e; }
 
-.status {
-  text-align: center;
-  font-size: 0.85rem;
-  min-height: 22px;
-  color: #555;
-  margin-bottom: 16px;
-  font-weight: 600;
-}
-
-/* Legend */
-.legend {
-  max-width: 620px;
-  width: 100%;
-  background: #fff;
-  border: 1.5px solid #ddd;
-  border-radius: 6px;
-  padding: 12px 16px;
-  box-shadow: 2px 2px 0 #ddd;
-}
-.legend h3 {
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #888;
-  margin-bottom: 8px;
-}
-.legend-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 4px 16px;
-  font-size: 0.72rem;
-  color: #444;
-  line-height: 1.7;
-}
+.status { text-align: center; font-size: 0.85rem; min-height: 22px; color: #555; margin-bottom: 16px; font-weight: 600; }
+.legend { max-width: 620px; width: 100%; background: #fff; border: 1.5px solid #ddd; border-radius: 6px; padding: 12px 16px; }
+.legend h3 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 8px; }
+.legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 4px 16px; font-size: 0.72rem; color: #444; }
 .legend-grid span { color: var(--blue); font-weight: 700; }
 
-/* Score badge */
-.score-badge {
-  display: none;
-  margin: 0 auto 12px;
-  background: var(--green);
-  color: #fff;
-  font-family: 'Kalam', cursive;
-  font-size: 1.1rem;
-  padding: 8px 24px;
-  border-radius: 8px;
-  box-shadow: 3px 3px 0 #0d4a2a;
-  text-align: center;
-}
+.score-badge { display: none; margin: 0 auto 12px; background: var(--green); color: #fff; font-family: 'Kalam', cursive; font-size: 1.1rem; padding: 8px 24px; border-radius: 8px; text-align: center; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>Sudoku Matematyczne</h1>
-  <div class="sub">Wpisz cyfry 1–9 tak, by każdy wiersz, kolumna i kwadrat 3×3 zawierały każdą cyfrę dokładnie raz.</div>
-  <div class="tag">Klasa 8 · Poziom: Umiarkowany</div>
+<div class="lang-switch">
+  <button onclick="toggleLang()" id="btnLang">EN</button>
 </div>
 
-<div class="rules">
-  <strong>Zasady:</strong> Komórki z wyrażeniami (niebieskie) to <em>wskazówki</em> — każde wyrażenie daje wynik będący cyfrą od 1 do 9.
-  Oblicz wynik i wpisz odpowiednią cyfrę w pustych komórkach. Pamiętaj: <strong>n!</strong> to silnia, <strong>⌊x⌋</strong> to podłoga, <strong>⌈x⌉</strong> to sufit.
+<div class="header">
+  <h1 id="txtTitle">Sudoku Matematyczne</h1>
+  <div class="sub" id="txtSub">Wpisz cyfry 1–9 tak, by każdy wiersz, kolumna i kwadrat 3×3 zawierały każdą cyfrę dokładnie raz.</div>
+  <div class="tag" id="txtTag">Klasa 8 · Poziom: Umiarkowany</div>
+</div>
+
+<div class="rules" id="txtRules">
+  <strong>Zasady:</strong> Komórki z wyrażeniami (niebieskie) to <em>wskazówki</em> — każde wyrażenie daje wynik będący cyfrą od 1 do 9. Oblicz wynik i wpisz odpowiednią cyfrę. <strong>n!</strong> to silnia, <strong>⌊x⌋</strong> to podłoga, <strong>⌈x⌉</strong> to sufit.
 </div>
 
 <div class="score-badge" id="scoreBadge">🎉 Brawo! Poprawnie wypełnione!</div>
@@ -255,181 +107,150 @@ button.primary:hover { background: #0e3d6e; }
 </div>
 
 <div class="controls">
-  <button class="primary" onclick="check()">✓ Sprawdź</button>
-  <button onclick="reveal()">💡 Pokaż odpowiedzi</button>
-  <button onclick="clearAll()">✕ Wyczyść</button>
+  <button class="primary" onclick="check()" id="btnCheck">✓ Sprawdź</button>
+  <button onclick="reveal()" id="btnReveal">💡 Pokaż odpowiedzi</button>
+  <button onclick="clearAll()" id="btnClear">✕ Wyczyść</button>
 </div>
 <div class="status" id="status"></div>
 
 <div class="legend">
-  <h3>Legenda oznaczeń</h3>
-  <div class="legend-grid">
-    <div><span>n!</span> silnia (np. 3! = 6)</div>
-    <div><span>⌊x⌋</span> podłoga (zaokrąglenie w dół)</div>
-    <div><span>⌈x⌉</span> sufit (zaokrąglenie w górę)</div>
-    <div><span>π</span> liczba pi ≈ 3,14159…</div>
-    <div><span>√x</span> pierwiastek kwadratowy</div>
-    <div><span>x²</span> kwadrat liczby</div>
-    <div><span>x³</span> sześcian liczby</div>
-    <div><span>x mod y</span> reszta z dzielenia</div>
-    <div><span>%</span> procent</div>
-  </div>
+  <h3 id="txtLegendTitle">Legenda oznaczeń</h3>
+  <div class="legend-grid" id="legendGrid">
+    </div>
 </div>
 
 <script>
-const sol = [
-  [5,3,4, 6,7,8, 9,1,2],
-  [6,7,2, 1,9,5, 3,4,8],
-  [1,9,8, 3,4,2, 5,6,7],
+let currentLang = 'pl';
 
-  [8,5,9, 7,6,1, 4,2,3],
-  [4,2,6, 8,5,3, 7,9,1],
-  [7,1,3, 9,2,4, 8,5,6],
-
-  [9,6,1, 5,3,7, 2,8,4],
-  [2,8,7, 4,1,9, 6,3,5],
-  [3,4,5, 2,8,6, 1,7,9],
-];
-
-// Clue expressions per digit — 8th grade level Poland
-// Concepts used: silnia, π (podłoga/sufit), pierwiastki, potęgi, ułamki proste, procenty, mod, równania liniowe, pola figur
-const clues = {
-  1: [
-    ["0!",             "silnia"],
-    ["⌊π − 2⌋",       "podłoga π"],
-    ["√1",             "pierwiastek"],
-    ["2⁰",             "potęga"],
-    ["10 mod 3",       "reszta"],
-    ["100% · 0,01",    "procent"],
-  ],
-  2: [
-    ["⌊π⌋ − 1",       "podłoga π"],
-    ["√4",             "pierwiastek"],
-    ["2!",             "silnia"],
-    ["10 mod 8",       "reszta"],
-    ["50% · 4",        "procent"],
-    ["½ · 4",          "ułamek"],
-  ],
-  3: [
-    ["⌊π⌋",           "podłoga π"],
-    ["√9",             "pierwiastek"],
-    ["3!  / 2",        "silnia"],
-    ["⌈e⌉",           "sufit e"],
-    ["30% · 10",       "procent"],
-    ["¾ · 4",          "ułamek"],
-  ],
-  4: [
-    ["⌈π⌉",           "sufit π"],
-    ["2²",             "potęga"],
-    ["√16",            "pierwiastek"],
-    ["4! / 6",         "silnia"],
-    ["40% · 10",       "procent"],
-    ["²/₃ · 6",        "ułamek"],
-  ],
-  5: [
-    ["⌊2π⌋ − 1",      "podłoga 2π"],
-    ["√25",            "pierwiastek"],
-    ["5! / 24",        "silnia"],
-    ["10 mod 5 + 5",   "reszta"],
-    ["50% · 10",       "procent"],
-    ["⌈π + 1⌉",       "sufit"],
-  ],
-  6: [
-    ["3!",             "silnia"],
-    ["⌊2π⌋",          "podłoga 2π"],
-    ["√36",            "pierwiastek"],
-    ["2³ − 2",         "potęga"],
-    ["60% · 10",       "procent"],
-    ["⅔ · 9",          "ułamek"],
-  ],
-  7: [
-    ["⌊2π + 0,5⌋",    "podłoga"],
-    ["√49",            "pierwiastek"],
-    ["7! / 720",       "silnia"],
-    ["⌈2π⌉",          "sufit 2π"],
-    ["70% · 10",       "procent"],
-    ["14 / 2",         "dziel."],
-  ],
-  8: [
-    ["2³",             "potęga"],
-    ["√64",            "pierwiastek"],
-    ["4! / 3",         "silnia"],
-    ["⌊8,9⌋",         "podłoga"],
-    ["80% · 10",       "procent"],
-    ["⌈π²⌉",          "sufit π²"],
-  ],
-  9: [
-    ["3²",             "potęga"],
-    ["√81",            "pierwiastek"],
-    ["3! + 3",         "silnia + dod."],
-    ["⌊3π⌋",          "podłoga 3π"],
-    ["90% · 10",       "procent"],
-    ["⌈π + 5⌉",       "sufit"],
-  ],
+const i18n = {
+  pl: {
+    title: "Sudoku Matematyczne",
+    sub: "Wpisz cyfry 1–9 tak, by każdy wiersz, kolumna i kwadrat 3×3 zawierały każdą cyfrę dokładnie raz.",
+    tag: "Klasa 8 · Poziom: Umiarkowany",
+    rules: "<strong>Zasady:</strong> Komórki z wyrażeniami (niebieskie) to <em>wskazówki</em> — każde wyrażenie daje wynik będący cyfrą od 1 do 9. <strong>n!</strong> to silnia, <strong>⌊x⌋</strong> to podłoga, <strong>⌈x⌉</strong> to sufit.",
+    legend: "Legenda oznaczeń",
+    btnCheck: "✓ Sprawdź",
+    btnReveal: "💡 Pokaż odpowiedzi",
+    btnClear: "✕ Wyczyść",
+    win: "🎉 Brawo! Poprawnie wypełnione!",
+    revealed: "Odpowiedzi wyświetlone.",
+    stat: (ok, tot, bad, mt) => `Poprawnie: ${ok}/${tot} · Błędy: ${bad} · Puste: ${mt}`,
+    legendItems: [
+      ["n!", "silnia (np. 3! = 6)"], ["⌊x⌋", "podłoga (zaokr. w dół)"], ["⌈x⌉", "sufit (zaokr. w górę)"],
+      ["π", "liczba pi ≈ 3,14"], ["√x", "pierwiastek"], ["x²", "kwadrat liczby"],
+      ["x mod y", "reszta z dzielenia"], ["%", "procent"], ["e", "liczba Eulera ≈ 2,71"]
+    ],
+    notes: {
+      silnia: "silnia", pi: "podłoga π", pierw: "pierwiastek", potega: "potęga", reszta: "reszta", 
+      proc: "procent", ulam: "ułamek", sufit: "sufit", sufit_e: "sufit e", dziel: "dzielenie"
+    }
+  },
+  en: {
+    title: "Math Sudoku",
+    sub: "Enter digits 1–9 so that every row, column, and 3×3 box contains each digit exactly once.",
+    tag: "Grade 8 · Level: Moderate",
+    rules: "<strong>Rules:</strong> Blue cells are <em>clues</em> — each expression results in a digit 1–9. <strong>n!</strong> is factorial, <strong>⌊x⌋</strong> is floor, <strong>⌈x⌉</strong> is ceiling.",
+    legend: "Notation Legend",
+    btnCheck: "✓ Check",
+    btnReveal: "💡 Show Answers",
+    btnClear: "✕ Clear",
+    win: "🎉 Well done! Perfectly filled!",
+    revealed: "Answers revealed.",
+    stat: (ok, tot, bad, mt) => `Correct: ${ok}/${tot} · Errors: ${bad} · Empty: ${mt}`,
+    legendItems: [
+      ["n!", "factorial (e.g. 3! = 6)"], ["⌊x⌋", "floor (round down)"], ["⌈x⌉", "ceiling (round up)"],
+      ["π", "pi constant ≈ 3.14"], ["√x", "square root"], ["x²", "square"],
+      ["x mod y", "modulo (remainder)"], ["%", "percent"], ["e", "Euler's number ≈ 2.71"]
+    ],
+    notes: {
+      silnia: "factorial", pi: "floor π", pierw: "root", potega: "power", reszta: "modulo", 
+      proc: "percent", ulam: "fraction", sufit: "ceiling", sufit_e: "ceiling e", dziel: "division"
+    }
+  }
 };
 
-function pickClue(d) {
-  const list = clues[d];
-  return list[Math.floor(Math.random() * list.length)];
+const sol = [
+  [5,3,4, 6,7,8, 9,1,2], [6,7,2, 1,9,5, 3,4,8], [1,9,8, 3,4,2, 5,6,7],
+  [8,5,9, 7,6,1, 4,2,3], [4,2,6, 8,5,3, 7,9,1], [7,1,3, 9,2,4, 8,5,6],
+  [9,6,1, 5,3,7, 2,8,4], [2,8,7, 4,1,9, 6,3,5], [3,4,5, 2,8,6, 1,7,9]
+];
+
+const cluesRaw = {
+  1: [["0!", "silnia"], ["⌊π − 2⌋", "pi"], ["√1", "pierw"], ["2⁰", "potega"], ["10 mod 3", "reszta"]],
+  2: [["⌊π⌋ − 1", "pi"], ["√4", "pierw"], ["2!", "silnia"], ["10 mod 8", "reszta"], ["50% · 4", "proc"]],
+  3: [["⌊π⌋", "pi"], ["√9", "pierw"], ["3! / 2", "silnia"], ["⌈e⌉", "sufit_e"], ["¾ · 4", "ulam"]],
+  4: [["⌈π⌉", "sufit"], ["2²", "potega"], ["√16", "pierw"], ["4! / 6", "silnia"], ["²/₃ · 6", "ulam"]],
+  5: [["⌊2π⌋ − 1", "pi"], ["√25", "pierw"], ["5! / 24", "silnia"], ["10 mod 5 + 5", "reszta"], ["50% · 10", "proc"]],
+  6: [["3!", "silnia"], ["⌊2π⌋", "pi"], ["√36", "pierw"], ["2³ − 2", "potega"], ["⅔ · 9", "ulam"]],
+  7: [["⌊2π + 0,5⌋", "pi"], ["√49", "pierw"], ["7! / 720", "silnia"], ["⌈2π⌉", "sufit"], ["70% · 10", "proc"]],
+  8: [["2³", "potega"], ["√64", "pierw"], ["4! / 3", "silnia"], ["⌊8,9⌋", "sufit"], ["⌈π²⌉", "sufit"]],
+  9: [["3²", "potega"], ["√81", "pierw"], ["3! + 3", "silnia"], ["⌊3π⌋", "pi"], ["90% · 10", "proc"]]
+};
+
+const givenSet = new Set(["0,0","0,4","0,8","1,2","1,5","1,7","2,1","2,3","2,6","3,0","3,4","3,8","4,2","4,5","4,7","5,1","5,3","5,6","6,0","6,4","6,8","7,2","7,5","7,7","8,1","8,3","8,6"]);
+
+// Store generated clues to keep them consistent during lang switch
+let boardClues = {}; 
+
+function toggleLang() {
+  currentLang = currentLang === 'pl' ? 'en' : 'pl';
+  updateUI();
 }
 
-// Which cells show a clue (about 27 givens — classic sudoku density)
-const givenSet = new Set([
-  "0,0","0,4","0,8",
-  "1,2","1,5","1,7",
-  "2,1","2,3","2,6",
-  "3,0","3,4","3,8",
-  "4,2","4,5","4,7",
-  "5,1","5,3","5,6",
-  "6,0","6,4","6,8",
-  "7,2","7,5","7,7",
-  "8,1","8,3","8,6",
-]);
+function updateUI() {
+  const lang = i18n[currentLang];
+  document.getElementById("btnLang").textContent = currentLang === 'pl' ? 'EN' : 'PL';
+  document.getElementById("txtTitle").textContent = lang.title;
+  document.getElementById("txtSub").textContent = lang.sub;
+  document.getElementById("txtTag").textContent = lang.tag;
+  document.getElementById("txtRules").innerHTML = lang.rules;
+  document.getElementById("btnCheck").textContent = lang.btnCheck;
+  document.getElementById("btnReveal").textContent = lang.btnReveal;
+  document.getElementById("btnClear").textContent = lang.btnClear;
+  document.getElementById("txtLegendTitle").textContent = lang.legend;
+  document.getElementById("scoreBadge").textContent = lang.win;
 
-function cellCls(r, c) {
-  let a = [];
-  if (c===2||c===5) a.push("br");
-  if (r===2||r===5) a.push("bb");
-  a.push(givenSet.has(`${r},${c}`) ? "given" : "inp");
-  return a.join(" ");
+  const leg = document.getElementById("legendGrid");
+  leg.innerHTML = lang.legendItems.map(i => `<div><span>${i[0]}</span> ${i[1]}</div>`).join('');
+
+  // Update clue notes on board
+  document.querySelectorAll(".clue").forEach(el => {
+    const key = el.dataset.noteKey;
+    el.querySelector(".note").textContent = lang.notes[key];
+  });
 }
 
 function build() {
   const t = document.getElementById("board");
   t.innerHTML = "";
-  for (let r=0;r<9;r++) {
+  for (let r=0; r<9; r++) {
     const tr = document.createElement("tr");
-    for (let c=0;c<9;c++) {
+    for (let c=0; c<9; c++) {
       const td = document.createElement("td");
-      td.className = cellCls(r,c);
-      const d = sol[r][c];
-      if (givenSet.has(`${r},${c}`)) {
-        const [expr, note] = pickClue(d);
-        td.innerHTML = `<div class="clue"><div class="expr">${expr}</div><div class="note">${note}</div></div>`;
+      const isClue = givenSet.has(`${r},${c}`);
+      td.className = (c===2||c===5 ? "br " : "") + (r===2||r===5 ? "bb " : "") + (isClue ? "given" : "inp");
+      
+      if (isClue) {
+        const d = sol[r][c];
+        const clueArr = cluesRaw[d][Math.floor(Math.random() * cluesRaw[d].length)];
+        td.innerHTML = `<div class="clue" data-note-key="${clueArr[1]}"><div class="expr">${clueArr[0]}</div><div class="note"></div></div>`;
       } else {
         const inp = document.createElement("input");
         inp.type = "text"; inp.maxLength = 1;
         inp.dataset.r = r; inp.dataset.c = c;
-        inp.addEventListener("input", e => {
-          const v = e.target.value;
-          if (!/^[1-9]$/.test(v)) e.target.value = "";
-          e.target.classList.remove("ok","bad");
-          document.getElementById("status").textContent = "";
-          document.getElementById("scoreBadge").style.display = "none";
-        });
+        inp.oninput = () => { inp.classList.remove("ok","bad"); document.getElementById("status").textContent=""; };
         td.appendChild(inp);
       }
       tr.appendChild(td);
     }
     t.appendChild(tr);
   }
+  updateUI();
 }
 
 function check() {
-  const inputs = document.querySelectorAll("input");
   let ok=0, bad=0, empty=0;
-  inputs.forEach(inp => {
-    inp.classList.remove("ok","bad");
+  document.querySelectorAll("input").forEach(inp => {
     const v = inp.value.trim();
     if (!v) { empty++; return; }
     if (+v === sol[+inp.dataset.r][+inp.dataset.c]) { inp.classList.add("ok"); ok++; }
@@ -438,29 +259,24 @@ function check() {
   const total = 81 - givenSet.size;
   const st = document.getElementById("status");
   const badge = document.getElementById("scoreBadge");
-  if (bad===0 && empty===0) {
-    st.textContent = "";
-    badge.style.display = "block";
-  } else {
-    badge.style.display = "none";
-    st.textContent = `Poprawnie: ${ok}/${total} · Błędy: ${bad} · Puste: ${empty}`;
-    st.style.color = bad > 0 ? "#c0392b" : "#555";
+  if (bad===0 && empty===0) { badge.style.display = "block"; st.textContent = ""; }
+  else { 
+    badge.style.display = "none"; 
+    st.textContent = i18n[currentLang].stat(ok, total, bad, empty);
+    st.style.color = bad > 0 ? "var(--red)" : "inherit";
   }
 }
 
 function reveal() {
   document.querySelectorAll("input").forEach(inp => {
     inp.value = sol[+inp.dataset.r][+inp.dataset.c];
-    inp.classList.remove("bad"); inp.classList.add("ok");
+    inp.className = "ok";
   });
-  document.getElementById("status").textContent = "Odpowiedzi wyświetlone.";
-  document.getElementById("scoreBadge").style.display = "none";
+  document.getElementById("status").textContent = i18n[currentLang].revealed;
 }
 
 function clearAll() {
-  document.querySelectorAll("input").forEach(inp => {
-    inp.value = ""; inp.classList.remove("ok","bad");
-  });
+  document.querySelectorAll("input").forEach(inp => { inp.value = ""; inp.className = ""; });
   document.getElementById("status").textContent = "";
   document.getElementById("scoreBadge").style.display = "none";
 }
