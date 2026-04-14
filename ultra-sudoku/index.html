@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sudoku Matematyczne – Klasa 8</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Kalam:wght@700&display=swap');
+
+:root {
+  --ink: #1a1a2e;
+  --paper: #f5f0e8;
+  --ruled: #e8e0d0;
+  --blue: #2563a8;
+  --red: #c0392b;
+  --green: #1a7a4a;
+  --gold: #c8860a;
+  --given-bg: #ddeeff;
+  --given-border: #2563a8;
+  --box-border: #1a1a2e;
+  --cell-border: #bbb;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  background-image:
+    repeating-linear-gradient(transparent, transparent 27px, var(--ruled) 27px, var(--ruled) 28px);
+  min-height: 100vh;
+  font-family: 'Nunito', sans-serif;
+  color: var(--ink);
+  padding: 24px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.header h1 {
+  font-family: 'Kalam', cursive;
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  color: var(--blue);
+  line-height: 1.1;
+}
+.header .sub {
+  font-size: 0.78rem;
+  color: #666;
+  margin-top: 4px;
+  font-style: italic;
+}
+.header .tag {
+  display: inline-block;
+  background: var(--blue);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 12px;
+  margin-top: 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Rules box */
+.rules {
+  background: #fff;
+  border-left: 4px solid var(--gold);
+  border-radius: 0 6px 6px 0;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  max-width: 620px;
+  width: 100%;
+  font-size: 0.76rem;
+  line-height: 1.65;
+  color: #333;
+  box-shadow: 2px 2px 0 var(--ruled);
+}
+.rules strong { color: var(--gold); }
+
+/* Board */
+.board-wrap {
+  overflow-x: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+table.board {
+  border-collapse: collapse;
+  border: 3px solid var(--box-border);
+  background: #fff;
+  box-shadow: 4px 4px 0 #ccc, 8px 8px 0 #e0e0e0;
+}
+
+td {
+  width: 68px;
+  height: 68px;
+  border: 1px solid var(--cell-border);
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
+  background: #fff;
+}
+
+/* thick box borders */
+td.br { border-right:  2.5px solid var(--box-border); }
+td.bb { border-bottom: 2.5px solid var(--box-border); }
+
+/* Given cells — filled with clue expression */
+td.given {
+  background: var(--given-bg);
+}
+
+.clue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 3px;
+  pointer-events: none;
+}
+.clue .expr {
+  font-size: 0.80rem;
+  font-weight: 700;
+  color: var(--blue);
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.clue .note {
+  font-size: 0.50rem;
+  color: #6688aa;
+  font-style: italic;
+  margin-top: 1px;
+}
+
+/* Input cells */
+td.inp input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'Kalam', cursive;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--ink);
+  cursor: text;
+}
+td.inp input:focus {
+  background: #fffbf0;
+  box-shadow: inset 0 0 0 2px var(--gold);
+}
+td.inp input.ok  { color: var(--green); }
+td.inp input.bad { color: var(--red); background: #fff5f5; }
+
+/* Controls */
+.controls {
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  margin-bottom: 12px;
+}
+button {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 8px 20px;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  cursor: pointer;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  transition: all 0.1s;
+}
+button:hover { background: var(--ink); color: #fff; }
+button:active { box-shadow: none; transform: translate(2px,2px); }
+button.primary { background: var(--blue); color: #fff; border-color: var(--blue); box-shadow: 2px 2px 0 #0e3d6e; }
+button.primary:hover { background: #0e3d6e; }
+
+.status {
+  text-align: center;
+  font-size: 0.85rem;
+  min-height: 22px;
+  color: #555;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+/* Legend */
+.legend {
+  max-width: 620px;
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  padding: 12px 16px;
+  box-shadow: 2px 2px 0 #ddd;
+}
+.legend h3 {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin-bottom: 8px;
+}
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 4px 16px;
+  font-size: 0.72rem;
+  color: #444;
+  line-height: 1.7;
+}
+.legend-grid span { color: var(--blue); font-weight: 700; }
+
+/* Score badge */
+.score-badge {
+  display: none;
+  margin: 0 auto 12px;
+  background: var(--green);
+  color: #fff;
+  font-family: 'Kalam', cursive;
+  font-size: 1.1rem;
+  padding: 8px 24px;
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 #0d4a2a;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Sudoku Matematyczne</h1>
+  <div class="sub">Wpisz cyfry 1–9 tak, by każdy wiersz, kolumna i kwadrat 3×3 zawierały każdą cyfrę dokładnie raz.</div>
+  <div class="tag">Klasa 8 · Poziom: Umiarkowany</div>
+</div>
+
+<div class="rules">
+  <strong>Zasady:</strong> Komórki z wyrażeniami (niebieskie) to <em>wskazówki</em> — każde wyrażenie daje wynik będący cyfrą od 1 do 9.
+  Oblicz wynik i wpisz odpowiednią cyfrę w pustych komórkach. Pamiętaj: <strong>n!</strong> to silnia, <strong>⌊x⌋</strong> to podłoga, <strong>⌈x⌉</strong> to sufit.
+</div>
+
+<div class="score-badge" id="scoreBadge">🎉 Brawo! Poprawnie wypełnione!</div>
+
+<div class="board-wrap">
+  <table class="board" id="board"></table>
+</div>
+
+<div class="controls">
+  <button class="primary" onclick="check()">✓ Sprawdź</button>
+  <button onclick="reveal()">💡 Pokaż odpowiedzi</button>
+  <button onclick="clearAll()">✕ Wyczyść</button>
+</div>
+<div class="status" id="status"></div>
+
+<div class="legend">
+  <h3>Legenda oznaczeń</h3>
+  <div class="legend-grid">
+    <div><span>n!</span> silnia (np. 3! = 6)</div>
+    <div><span>⌊x⌋</span> podłoga (zaokrąglenie w dół)</div>
+    <div><span>⌈x⌉</span> sufit (zaokrąglenie w górę)</div>
+    <div><span>π</span> liczba pi ≈ 3,14159…</div>
+    <div><span>√x</span> pierwiastek kwadratowy</div>
+    <div><span>x²</span> kwadrat liczby</div>
+    <div><span>x³</span> sześcian liczby</div>
+    <div><span>x mod y</span> reszta z dzielenia</div>
+    <div><span>%</span> procent</div>
+  </div>
+</div>
+
+<script>
+const sol = [
+  [5,3,4, 6,7,8, 9,1,2],
+  [6,7,2, 1,9,5, 3,4,8],
+  [1,9,8, 3,4,2, 5,6,7],
+
+  [8,5,9, 7,6,1, 4,2,3],
+  [4,2,6, 8,5,3, 7,9,1],
+  [7,1,3, 9,2,4, 8,5,6],
+
+  [9,6,1, 5,3,7, 2,8,4],
+  [2,8,7, 4,1,9, 6,3,5],
+  [3,4,5, 2,8,6, 1,7,9],
+];
+
+// Clue expressions per digit — 8th grade level Poland
+// Concepts used: silnia, π (podłoga/sufit), pierwiastki, potęgi, ułamki proste, procenty, mod, równania liniowe, pola figur
+const clues = {
+  1: [
+    ["0!",             "silnia"],
+    ["⌊π − 2⌋",       "podłoga π"],
+    ["√1",             "pierwiastek"],
+    ["2⁰",             "potęga"],
+    ["10 mod 3",       "reszta"],
+    ["100% · 0,01",    "procent"],
+  ],
+  2: [
+    ["⌊π⌋ − 1",       "podłoga π"],
+    ["√4",             "pierwiastek"],
+    ["2!",             "silnia"],
+    ["10 mod 8",       "reszta"],
+    ["50% · 4",        "procent"],
+    ["½ · 4",          "ułamek"],
+  ],
+  3: [
+    ["⌊π⌋",           "podłoga π"],
+    ["√9",             "pierwiastek"],
+    ["3!  / 2",        "silnia"],
+    ["⌈e⌉",           "sufit e"],
+    ["30% · 10",       "procent"],
+    ["¾ · 4",          "ułamek"],
+  ],
+  4: [
+    ["⌈π⌉",           "sufit π"],
+    ["2²",             "potęga"],
+    ["√16",            "pierwiastek"],
+    ["4! / 6",         "silnia"],
+    ["40% · 10",       "procent"],
+    ["²/₃ · 6",        "ułamek"],
+  ],
+  5: [
+    ["⌊2π⌋ − 1",      "podłoga 2π"],
+    ["√25",            "pierwiastek"],
+    ["5! / 24",        "silnia"],
+    ["10 mod 5 + 5",   "reszta"],
+    ["50% · 10",       "procent"],
+    ["⌈π + 1⌉",       "sufit"],
+  ],
+  6: [
+    ["3!",             "silnia"],
+    ["⌊2π⌋",          "podłoga 2π"],
+    ["√36",            "pierwiastek"],
+    ["2³ − 2",         "potęga"],
+    ["60% · 10",       "procent"],
+    ["⅔ · 9",          "ułamek"],
+  ],
+  7: [
+    ["⌊2π + 0,5⌋",    "podłoga"],
+    ["√49",            "pierwiastek"],
+    ["7! / 720",       "silnia"],
+    ["⌈2π⌉",          "sufit 2π"],
+    ["70% · 10",       "procent"],
+    ["14 / 2",         "dziel."],
+  ],
+  8: [
+    ["2³",             "potęga"],
+    ["√64",            "pierwiastek"],
+    ["4! / 3",         "silnia"],
+    ["⌊8,9⌋",         "podłoga"],
+    ["80% · 10",       "procent"],
+    ["⌈π²⌉",          "sufit π²"],
+  ],
+  9: [
+    ["3²",             "potęga"],
+    ["√81",            "pierwiastek"],
+    ["3! + 3",         "silnia + dod."],
+    ["⌊3π⌋",          "podłoga 3π"],
+    ["90% · 10",       "procent"],
+    ["⌈π + 5⌉",       "sufit"],
+  ],
+};
+
+function pickClue(d) {
+  const list = clues[d];
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+// Which cells show a clue (about 27 givens — classic sudoku density)
+const givenSet = new Set([
+  "0,0","0,4","0,8",
+  "1,2","1,5","1,7",
+  "2,1","2,3","2,6",
+  "3,0","3,4","3,8",
+  "4,2","4,5","4,7",
+  "5,1","5,3","5,6",
+  "6,0","6,4","6,8",
+  "7,2","7,5","7,7",
+  "8,1","8,3","8,6",
+]);
+
+function cellCls(r, c) {
+  let a = [];
+  if (c===2||c===5) a.push("br");
+  if (r===2||r===5) a.push("bb");
+  a.push(givenSet.has(`${r},${c}`) ? "given" : "inp");
+  return a.join(" ");
+}
+
+function build() {
+  const t = document.getElementById("board");
+  t.innerHTML = "";
+  for (let r=0;r<9;r++) {
+    const tr = document.createElement("tr");
+    for (let c=0;c<9;c++) {
+      const td = document.createElement("td");
+      td.className = cellCls(r,c);
+      const d = sol[r][c];
+      if (givenSet.has(`${r},${c}`)) {
+        const [expr, note] = pickClue(d);
+        td.innerHTML = `<div class="clue"><div class="expr">${expr}</div><div class="note">${note}</div></div>`;
+      } else {
+        const inp = document.createElement("input");
+        inp.type = "text"; inp.maxLength = 1;
+        inp.dataset.r = r; inp.dataset.c = c;
+        inp.addEventListener("input", e => {
+          const v = e.target.value;
+          if (!/^[1-9]$/.test(v)) e.target.value = "";
+          e.target.classList.remove("ok","bad");
+          document.getElementById("status").textContent = "";
+          document.getElementById("scoreBadge").style.display = "none";
+        });
+        td.appendChild(inp);
+      }
+      tr.appendChild(td);
+    }
+    t.appendChild(tr);
+  }
+}
+
+function check() {
+  const inputs = document.querySelectorAll("input");
+  let ok=0, bad=0, empty=0;
+  inputs.forEach(inp => {
+    inp.classList.remove("ok","bad");
+    const v = inp.value.trim();
+    if (!v) { empty++; return; }
+    if (+v === sol[+inp.dataset.r][+inp.dataset.c]) { inp.classList.add("ok"); ok++; }
+    else { inp.classList.add("bad"); bad++; }
+  });
+  const total = 81 - givenSet.size;
+  const st = document.getElementById("status");
+  const badge = document.getElementById("scoreBadge");
+  if (bad===0 && empty===0) {
+    st.textContent = "";
+    badge.style.display = "block";
+  } else {
+    badge.style.display = "none";
+    st.textContent = `Poprawnie: ${ok}/${total} · Błędy: ${bad} · Puste: ${empty}`;
+    st.style.color = bad > 0 ? "#c0392b" : "#555";
+  }
+}
+
+function reveal() {
+  document.querySelectorAll("input").forEach(inp => {
+    inp.value = sol[+inp.dataset.r][+inp.dataset.c];
+    inp.classList.remove("bad"); inp.classList.add("ok");
+  });
+  document.getElementById("status").textContent = "Odpowiedzi wyświetlone.";
+  document.getElementById("scoreBadge").style.display = "none";
+}
+
+function clearAll() {
+  document.querySelectorAll("input").forEach(inp => {
+    inp.value = ""; inp.classList.remove("ok","bad");
+  });
+  document.getElementById("status").textContent = "";
+  document.getElementById("scoreBadge").style.display = "none";
+}
+
+build();
+</script>
+</body>
+</html>
