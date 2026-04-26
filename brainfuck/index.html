@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Brainfuck</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0d0d0d;
+    color: #e0e0e0;
+    font-family: 'Courier New', monospace;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    background: #111;
+    border-bottom: 1px solid #222;
+    flex-shrink: 0;
+  }
+
+  header h1 { font-size: 13px; color: #555; letter-spacing: 2px; text-transform: uppercase; }
+
+  .controls { display: flex; gap: 6px; margin-left: auto; align-items: center; }
+
+  button {
+    background: #1e1e1e;
+    color: #ccc;
+    border: 1px solid #333;
+    padding: 4px 12px;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background .15s;
+  }
+  button:hover { background: #2a2a2a; }
+  button.run { border-color: #3a7d44; color: #6fcf7c; }
+  button.run:hover { background: #1a3a1f; }
+  button.step { border-color: #4a6fa5; color: #7aaddf; }
+  button.step:hover { background: #1a2a3a; }
+
+  .speed-label { font-size: 11px; color: #555; }
+  select {
+    background: #1e1e1e; color: #aaa; border: 1px solid #333;
+    font-family: inherit; font-size: 11px; padding: 3px 6px; border-radius: 3px; cursor: pointer;
+  }
+
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .left {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    border-right: 1px solid #1a1a1a;
+  }
+
+  .editor-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #code {
+    width: 100%;
+    height: 100%;
+    background: #0d0d0d;
+    color: #d4d4d4;
+    border: none;
+    outline: none;
+    padding: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    resize: none;
+    caret-color: #6fcf7c;
+  }
+
+  .highlight-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+    padding: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: transparent;
+  }
+
+  .io-area {
+    border-top: 1px solid #1a1a1a;
+    flex-shrink: 0;
+  }
+
+  .io-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 0 8px;
+  }
+  .io-label { font-size: 10px; color: #444; width: 14px; text-align: center; flex-shrink: 0; }
+
+  #input-field {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #9e9e9e;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 5px 6px;
+  }
+
+  #output {
+    padding: 6px 10px;
+    font-size: 12px;
+    color: #7aaddf;
+    min-height: 28px;
+    max-height: 50px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .status-bar {
+    display: flex;
+    gap: 16px;
+    padding: 4px 10px;
+    background: #0a0a0a;
+    border-top: 1px solid #1a1a1a;
+    font-size: 10px;
+    color: #444;
+    flex-shrink: 0;
+  }
+
+  .status-bar span { color: #666; }
+  .status-bar .ok { color: #6fcf7c; }
+  .status-bar .err { color: #e06c75; }
+  .status-bar .running { color: #e5c07b; }
+
+  /* Right side */
+  .right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .cells-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 10px;
+    background: #0f0f0f;
+    border-bottom: 1px solid #1a1a1a;
+    flex-shrink: 0;
+  }
+  .cells-header span { font-size: 10px; color: #444; }
+  .cells-header .ptr-info { margin-left: auto; font-size: 10px; color: #555; }
+
+  #cells {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 4px;
+  }
+
+  .cell {
+    width: 46px;
+    border: 1px solid #222;
+    border-radius: 3px;
+    padding: 4px 3px;
+    text-align: center;
+    background: #111;
+    transition: background .1s, border-color .1s;
+    flex-shrink: 0;
+  }
+  .cell.active {
+    border-color: #6fcf7c;
+    background: #0d1f12;
+  }
+  .cell.nonzero {
+    border-color: #2a3a4a;
+    background: #0f1a25;
+  }
+  .cell .cell-idx { font-size: 8px; color: #333; display: block; }
+  .cell .cell-val { font-size: 13px; color: #ccc; display: block; line-height: 1.4; }
+  .cell.active .cell-val { color: #6fcf7c; }
+  .cell .cell-chr { font-size: 9px; color: #555; display: block; min-height: 12px; }
+  .cell.active .cell-chr { color: #3a7d44; }
+
+  #cells::-webkit-scrollbar { width: 4px; }
+  #cells::-webkit-scrollbar-track { background: #0d0d0d; }
+  #cells::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+
+  .cur-highlight { background: #4a3000; border-radius: 1px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Brainfuck</h1>
+  <div class="controls">
+    <span class="speed-label">speed</span>
+    <select id="speed">
+      <option value="200">slow</option>
+      <option value="50" selected>normal</option>
+      <option value="5">fast</option>
+      <option value="0">instant</option>
+    </select>
+    <button class="step" id="btn-step">Step</button>
+    <button class="run" id="btn-run">▶ Run</button>
+    <button id="btn-reset">Reset</button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="left">
+    <div class="editor-wrap">
+      <textarea id="code" spellcheck="false" placeholder="// write brainfuck here&#10;// e.g. Hello World:&#10;++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++."></textarea>
+      <div class="highlight-overlay" id="hl-overlay"></div>
+    </div>
+    <div class="io-area">
+      <div class="io-row">
+        <span class="io-label">in</span>
+        <input id="input-field" type="text" placeholder="input (ASCII chars)" />
+      </div>
+      <div class="io-row" style="border-bottom:none">
+        <span class="io-label">out</span>
+        <div id="output"></div>
+      </div>
+    </div>
+    <div class="status-bar">
+      <div>step <span id="stat-step">0</span></div>
+      <div>ptr <span id="stat-ptr">0</span></div>
+      <div>ip <span id="stat-ip">0</span></div>
+      <div id="stat-msg" class="ok">ready</div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="cells-header">
+      <span>memory cells</span>
+      <span class="ptr-info" id="ptr-info">ptr: 0 · val: 0</span>
+    </div>
+    <div id="cells"></div>
+  </div>
+</div>
+
+<script>
+const CELL_COUNT = 64;
+let tape = new Uint8Array(CELL_COUNT);
+let ptr = 0;
+let ip = 0;
+let steps = 0;
+let output = '';
+let inputBuf = '';
+let inputPos = 0;
+let running = false;
+let paused = false;
+let runTimer = null;
+let code = '';
+let bracketMap = {};
+
+const elCode = document.getElementById('code');
+const elInput = document.getElementById('input-field');
+const elOutput = document.getElementById('output');
+const elCells = document.getElementById('cells');
+const elStep = document.getElementById('btn-step');
+const elRun = document.getElementById('btn-run');
+const elReset = document.getElementById('btn-reset');
+const elSpeed = document.getElementById('speed');
+const elStatStep = document.getElementById('stat-step');
+const elStatPtr = document.getElementById('stat-ptr');
+const elStatIp = document.getElementById('stat-ip');
+const elStatMsg = document.getElementById('stat-msg');
+const elPtrInfo = document.getElementById('ptr-info');
+const elHl = document.getElementById('hl-overlay');
+
+// Build cells
+for (let i = 0; i < CELL_COUNT; i++) {
+  const d = document.createElement('div');
+  d.className = 'cell' + (i === 0 ? ' active' : '');
+  d.id = 'cell-' + i;
+  d.innerHTML = `<span class="cell-idx">${i}</span><span class="cell-val">0</span><span class="cell-chr"></span>`;
+  elCells.appendChild(d);
+}
+
+function buildBracketMap(src) {
+  const map = {};
+  const stack = [];
+  for (let i = 0; i < src.length; i++) {
+    if (src[i] === '[') stack.push(i);
+    else if (src[i] === ']') {
+      if (!stack.length) return null;
+      const open = stack.pop();
+      map[open] = i;
+      map[i] = open;
+    }
+  }
+  return stack.length ? null : map;
+}
+
+function resetState() {
+  tape = new Uint8Array(CELL_COUNT);
+  ptr = 0; ip = 0; steps = 0; output = ''; inputPos = 0;
+  running = false; paused = false;
+  clearInterval(runTimer); runTimer = null;
+  elOutput.textContent = '';
+  elRun.textContent = '▶ Run';
+  setStatus('ready', 'ok');
+  updateCells();
+  updateStats();
+  highlightIP(-1);
+}
+
+function updateCells() {
+  for (let i = 0; i < CELL_COUNT; i++) {
+    const d = document.getElementById('cell-' + i);
+    const v = tape[i];
+    d.className = 'cell' + (i === ptr ? ' active' : v !== 0 ? ' nonzero' : '');
+    d.querySelector('.cell-val').textContent = v;
+    d.querySelector('.cell-chr').textContent = (v >= 32 && v < 127) ? String.fromCharCode(v) : '';
+  }
+  // scroll active cell into view
+  const active = document.getElementById('cell-' + ptr);
+  if (active) active.scrollIntoView({ block: 'nearest' });
+  elPtrInfo.textContent = `ptr: ${ptr} · val: ${tape[ptr]}`;
+}
+
+function updateStats() {
+  elStatStep.textContent = steps;
+  elStatPtr.textContent = ptr;
+  elStatIp.textContent = ip;
+}
+
+function setStatus(msg, cls) {
+  elStatMsg.textContent = msg;
+  elStatMsg.className = cls;
+}
+
+function highlightIP(pos) {
+  const src = elCode.value;
+  if (pos < 0 || pos >= src.length) { elHl.textContent = ''; return; }
+  const before = escHtml(src.slice(0, pos));
+  const cur = escHtml(src[pos]);
+  const after = escHtml(src.slice(pos + 1));
+  elHl.innerHTML = `${before}<span class="cur-highlight">${cur}</span>${after}`;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function execStep() {
+  if (ip >= code.length) {
+    setStatus('done', 'ok');
+    stopRun();
+    highlightIP(-1);
+    return false;
+  }
+
+  const op = code[ip];
+  highlightIP(ip);
+
+  switch (op) {
+    case '>': ptr = (ptr + 1) % CELL_COUNT; break;
+    case '<': ptr = (ptr - 1 + CELL_COUNT) % CELL_COUNT; break;
+    case '+': tape[ptr] = (tape[ptr] + 1) & 0xff; break;
+    case '-': tape[ptr] = (tape[ptr] - 1 + 256) & 0xff; break;
+    case '.':
+      output += String.fromCharCode(tape[ptr]);
+      elOutput.textContent = output;
+      break;
+    case ',': {
+      const inp = elInput.value;
+      if (inputPos < inp.length) {
+        tape[ptr] = inp.charCodeAt(inputPos++) & 0xff;
+      } else {
+        tape[ptr] = 0;
+      }
+      break;
+    }
+    case '[':
+      if (tape[ptr] === 0) ip = bracketMap[ip];
+      break;
+    case ']':
+      if (tape[ptr] !== 0) ip = bracketMap[ip];
+      break;
+  }
+
+  ip++;
+  steps++;
+  updateCells();
+  updateStats();
+  return true;
+}
+
+function prepare() {
+  code = elCode.value;
+  bracketMap = buildBracketMap(code);
+  if (bracketMap === null) {
+    setStatus('unmatched brackets', 'err');
+    return false;
+  }
+  return true;
+}
+
+elStep.addEventListener('click', () => {
+  if (running) return;
+  if (steps === 0) {
+    resetState();
+    if (!prepare()) return;
+    setStatus('stepping', 'running');
+  }
+  if (ip >= code.length) { resetState(); return; }
+  const ok = execStep();
+  if (!ok) setStatus('done', 'ok');
+  else if (ip >= code.length) setStatus('done', 'ok');
+  else setStatus('stepping', 'running');
+});
+
+elRun.addEventListener('click', () => {
+  if (running) {
+    stopRun();
+    setStatus('paused', 'running');
+    return;
+  }
+  if (steps === 0 || ip >= code.length) {
+    resetState();
+    if (!prepare()) return;
+  }
+  startRun();
+});
+
+function startRun() {
+  running = true;
+  elRun.textContent = '⏸ Pause';
+  setStatus('running', 'running');
+
+  const delay = parseInt(elSpeed.value);
+
+  if (delay === 0) {
+    // instant: run all synchronously with step limit
+    const MAX = 2_000_000;
+    let i = 0;
+    while (ip < code.length && i++ < MAX) {
+      const op = code[ip];
+      switch (op) {
+        case '>': ptr = (ptr + 1) % CELL_COUNT; break;
+        case '<': ptr = (ptr - 1 + CELL_COUNT) % CELL_COUNT; break;
+        case '+': tape[ptr] = (tape[ptr] + 1) & 0xff; break;
+        case '-': tape[ptr] = (tape[ptr] - 1 + 256) & 0xff; break;
+        case '.':
+          output += String.fromCharCode(tape[ptr]);
+          break;
+        case ',': {
+          const inp = elInput.value;
+          tape[ptr] = inputPos < inp.length ? inp.charCodeAt(inputPos++) & 0xff : 0;
+          break;
+        }
+        case '[': if (tape[ptr] === 0) ip = bracketMap[ip]; break;
+        case ']': if (tape[ptr] !== 0) ip = bracketMap[ip]; break;
+      }
+      ip++; steps++;
+    }
+    elOutput.textContent = output;
+    updateCells(); updateStats(); highlightIP(-1);
+    running = false;
+    elRun.textContent = '▶ Run';
+    setStatus(i >= MAX ? 'step limit reached' : 'done', i >= MAX ? 'err' : 'ok');
+    return;
+  }
+
+  runTimer = setInterval(() => {
+    for (let b = 0; b < 10; b++) {
+      if (ip >= code.length) { stopRun(); setStatus('done', 'ok'); highlightIP(-1); return; }
+      execStep();
+    }
+  }, delay);
+}
+
+function stopRun() {
+  running = false;
+  clearInterval(runTimer); runTimer = null;
+  elRun.textContent = '▶ Run';
+}
+
+elReset.addEventListener('click', () => {
+  stopRun();
+  resetState();
+});
+
+// sync textarea scroll with highlight overlay
+elCode.addEventListener('scroll', () => {
+  elHl.scrollTop = elCode.scrollTop;
+  elHl.scrollLeft = elCode.scrollLeft;
+});
+
+elCode.addEventListener('input', () => {
+  if (!running) resetState();
+});
+
+resetState();
+</script>
+</body>
+</html>
