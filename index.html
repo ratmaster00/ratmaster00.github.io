@@ -428,7 +428,7 @@ body {
 
             <div class="file-view" id="fileView">
                 <div id="profile" class="profile">
-                    <img src="https://ratmaster00.github.io/src/pfp.png" alt="Profile Picture" oncontextmenu="return false;" onerror="this.src='https://win98icons.alexmeub.com/icons/png/users-2.png'" onclick="const msgs=['*boop* uwu','h-hey!! that\'s my nose!!','boop detected. initiating cuddle protocol.','*visor glows blue* ...boop received.','unauthorized boop! ...it was authorized.'];alert(msgs[Math.floor(Math.random()*msgs.length)]);" style="cursor:pointer;">
+                    <img src="https://ratmaster00.github.io/src/pfp.png" alt="Profile Picture" oncontextmenu="return false;" onerror="this.src='https://win98icons.alexmeub.com/icons/png/users-2.png'" onclick="playSound();const msgs=['*boop* uwu','h-hey!! that\'s my nose!!','boop detected. initiating cuddle protocol.','*visor glows blue* ...boop received.','unauthorized boop! ...it was authorized.'];alert(msgs[Math.floor(Math.random()*msgs.length)]);" style="cursor:pointer;">
                     <div class="profile-info">
                         <h1>ratmaster00</h1>
                         <p>Just a hobbyist coder making cool projects. Now plays GD! Windows Icons by <a href="https://win98icons.alexmeub.com/" target="_blank">Alex Meub</a>.</p>
@@ -539,6 +539,9 @@ body {
 </div>
 
 <script>
+function playSound() {
+  new Audio('ratmaster00.github.io/src/dialup.mp3').play();
+}
 function updateObjectCount() {
     const n = document.querySelectorAll('#projectList .project').length;
     document.getElementById('objectCount').textContent = n + ' object(s)';
