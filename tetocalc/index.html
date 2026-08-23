@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Kasane Teto Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="calc-wrapper">
+    <!-- Interactive Plush -->
+    <div class="plush-container" id="plushWrapper">
+      <img src="teto_plush.png" alt="Teto Plush" id="tetoPlush" class="plush-img" />
+    </div>
+
+    <!-- Main Calculator Shell -->
+    <main class="calculator">
+      <!-- Top Screen -->
+      <section class="display-container">
+        <div class="history-display" id="history"></div>
+        <div class="main-display" id="display">0</div>
+      </section>
+
+      <!-- Button Grid -->
+      <section class="keypad" id="keypad">
+        <!-- Row 1 -->
+        <button class="btn btn-func" data-action="backspace">⌫</button>
+        <button class="btn btn-num" data-val="7">7</button>
+        <button class="btn btn-num" data-val="8">8</button>
+        <button class="btn btn-num" data-val="9">9</button>
+        <button class="btn btn-op" data-op="/">÷</button>
+
+        <!-- Row 2 -->
+        <div class="btn btn-empty"></div>
+        <button class="btn btn-num" data-val="4">4</button>
+        <button class="btn btn-num" data-val="5">5</button>
+        <button class="btn btn-num" data-val="6">6</button>
+        <button class="btn btn-op" data-op="*">×</button>
+
+        <!-- Row 3 -->
+        <div class="btn btn-empty"></div>
+        <button class="btn btn-num" data-val="1">1</button>
+        <button class="btn btn-num" data-val="2">2</button>
+        <button class="btn btn-num" data-val="3">3</button>
+        <button class="btn btn-op" data-op="-">-</button>
+
+        <!-- Row 4 -->
+        <button class="btn btn-func" data-action="clear">AC</button>
+        <button class="btn btn-num" data-val="0">0</button>
+        <button class="btn btn-num" data-val=".">.</button>
+        <button class="btn btn-eq" data-action="equals">=</button>
+        <button class="btn btn-op" data-op="+">+</button>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
