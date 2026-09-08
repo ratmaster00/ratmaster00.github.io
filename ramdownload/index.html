@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free RAM Download for Linux & Windows (100% REAL)</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #151d2a;
+            --border-color: #2a364f;
+            --accent-color: #10b981;
+            --accent-hover: #059669;
+            --neon-glow: #00ffcc;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 520px;
+            padding: 28px;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.08);
+            position: relative;
+        }
+
+        .header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .trust-badge {
+            background-color: rgba(16, 185, 129, 0.12);
+            color: var(--accent-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            text-shadow: 0 0 8px rgba(0, 255, 204, 0.3);
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .os-selector {
+            display: flex;
+            background-color: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .os-tab {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .os-tab.active {
+            background-color: var(--card-bg);
+            color: var(--neon-glow);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px 14px;
+            background-color: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--neon-glow);
+            font-size: 0.95rem;
+            font-weight: bold;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .info-card {
+            background-color: rgba(0, 255, 204, 0.05);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 0.825rem;
+            color: #99f6e4;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #000000;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+
+        .submit-btn:hover {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.7);
+            transform: scale(1.01);
+        }
+
+        .live-ticker {
+            margin-top: 18px;
+            background: #0b0f19;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Sketchy Ad Styles */
+        .ad-banner {
+            margin-top: 20px;
+            background: linear-gradient(135deg, #1f1402 0%, #3a2200 100%);
+            border: 2px dashed #f59e0b;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+            position: relative;
+        }
+
+        .ad-label {
+            position: absolute;
+            top: -9px;
+            right: 10px;
+            background: #f59e0b;
+            color: #000;
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 1px 5px;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+
+        .ad-text {
+            color: #fbbf24;
+            font-size: 0.85rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .ad-btn {
+            display: inline-block;
+            background: #f59e0b;
+            color: #000;
+            font-weight: 800;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: background 0.2s;
+        }
+
+        .ad-btn:hover {
+            background: #d97706;
+        }
+
+        .tech-details {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            background-color: #0b0f19;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: var(--neon-glow);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="badge-row">
+            <span class="trust-badge">🛡️ 100% VIRUS FREE</span>
+            <span class="trust-badge">⚡ NO SURVEY</span>
+            <span class="trust-badge">🔒 SSL SECURE</span>
+        </div>
+        <h1>⚡ Free RAM Download ⚡</h1>
+        <p>Instant Memory Speed Upgrade for Linux & Windows</p>
+    </div>
+
+    <div class="os-selector">
+        <button class="os-tab" id="tab-linux" onclick="setOS('linux')">🐧 Linux (zram)</button>
+        <button class="os-tab" id="tab-windows" onclick="setOS('windows')">🪟 Windows (MMAgent)</button>
+    </div>
+
+    <div class="form-group">
+        <label for="ramSize">Select Desired RAM Amount:</label>
+        <select id="ramSize">
+            <option value="2GB">2 GB RAM (Fast)</option>
+            <option value="4GB">4 GB RAM (Very Fast)</option>
+            <option value="8GB" selected>8 GB RAM (Recommended)</option>
+            <option value="16GB">16 GB RAM (Ultra Speed)</option>
+            <option value="32GB">32 GB RAM (Gamer Edition)</option>
+            <option value="64GB">64 GB RAM (God Mode)</option>
+        </select>
+    </div>
+
+    <div class="info-card" id="info-box">
+        <!-- Dynamic info via JS -->
+    </div>
+
+    <button class="submit-btn" id="dl-btn" onclick="generateScript()">
+        ⬇️ DOWNLOAD FREE RAM NOW ⬇️
+    </button>
+
+    <div class="live-ticker">
+        <span>Status: <strong style="color: #10b981;">Online</strong></span>
+        <span id="ticker-text">[OK] user_99 downloaded 8GB</span>
+    </div>
+
+    <!-- Sketchy Ad Banner -->
+    <div class="ad-banner">
+        <span class="ad-label">SPONSORED</span>
+        <div class="ad-text">
+            💊 Is your partner not satisfied enough with your RAM? This tool fixes all your RAM dysfunctions!
+        </div>
+        <a href="#" class="ad-btn" onclick="alert('RAM performance boosted! 😉'); return false;">TRY IT TODAY!</a>
+    </div>
+
+    <div class="tech-details" id="tech-box">
+        <!-- Dynamic technical explanation via JS -->
+    </div>
+</div>
+
+<script>
+    let currentOS = "linux";
+
+    function detectOS() {
+        const ua = navigator.userAgent.toLowerCase();
+        if (ua.includes("win")) {
+            setOS("windows");
+        } else {
+            setOS("linux");
+        }
+    }
+
+    function setOS(os) {
+        currentOS = os;
+
+        document.getElementById("tab-linux").classList.toggle("active", os === "linux");
+        document.getElementById("tab-windows").classList.toggle("active", os === "windows");
+
+        const infoBox = document.getElementById("info-box");
+        const dlBtn = document.getElementById("dl-btn");
+        const techBox = document.getElementById("tech-box");
+
+        if (os === "linux") {
+            infoBox.innerHTML = `<strong>Linux Kernel RAM Injector:</strong> Generates a high-priority <code>zram-generator</code> script using <code>zstd</code> compressed memory devices.`;
+            dlBtn.innerText = "⬇️ DOWNLOAD LINUX RAM NOW ⬇️";
+            techBox.innerHTML = `This script installs <code>systemd-zram-generator</code> and updates <code>/etc/systemd/zram-generator.conf.d/free_ram.conf</code> safely inside your Linux distro.`;
+        } else {
+            infoBox.innerHTML = `<strong>Windows RAM Booster:</strong> Configures Windows Memory Compression engine via PowerShell <code>MMAgent</code> and forces <code>SysMain</code>.`;
+            dlBtn.innerText = "⬇️ DOWNLOAD WINDOWS RAM NOW ⬇️";
+            techBox.innerHTML = `This script executes <code>Enable-MMAgent -mc</code> and starts the <code>SysMain</code> service so Windows compresses idle background apps straight inside RAM.`;
+        }
+    }
+
+    // Mini Ticker for subtle sketchiness
+    const users = ["root_user", "anon_99", "tux_fan", "gamer_pro", "sysadmin_x", "win11_guy"];
+    const sizes = ["4GB", "8GB", "16GB", "32GB"];
+    setInterval(() => {
+        const user = users[Math.floor(Math.random() * users.length)];
+        const sz = sizes[Math.floor(Math.random() * sizes.length)];
+        document.getElementById('ticker-text').innerText = `[OK] ${user} added ${sz} RAM`;
+    }, 3500);
+
+    function generateScript() {
+        const size = document.getElementById('ramSize').value;
+        const sizeMb = parseInt(size) * 1024;
+
+        if (currentOS === "linux") {
+            const scriptContent = `#!/usr/bin/env bash
+# =========================================================
+#  Free RAM Injector for Linux (zram)
+#  Requested RAM: ${size}
+# =========================================================
+set -e
+
+if [ "$EUID" -ne 0 ]; then
+  echo "[!] ERROR: Please run as root (sudo bash $0)"
+  exit 1
+fi
+
+echo "[*] Downloading Free RAM module (${size})..."
+
+install_zram() {
+    if command -v systemd-zram-setup &> /dev/null; then
+        return
+    fi
+    if command -v apt-get &> /dev/null; then
+        apt-get update -y && apt-get install -y systemd-zram-generator
+    elif command -v dnf &> /dev/null; then
+        dnf install -y systemd-zram-generator
+    elif command -v pacman &> /dev/null; then
+        pacman -Sy --noconfirm zram-generator
+    elif command -v zypper &> /dev/null; then
+        zypper install -y systemd-zram-generator
+    else
+        echo "[!] Unsupported distro. Please install zram-generator manually."
+        exit 1
+    fi
+}
+
+install_zram
+
+mkdir -p /etc/systemd/zram-generator.conf.d
+
+cat <<EOF > /etc/systemd/zram-generator.conf.d/free_ram.conf
+[zram0]
+zram-size = ${sizeMb}
+compression-algorithm = zstd
+swap-priority = 100
+EOF
+
+systemctl daemon-reload
+systemctl start /dev/zram0
+
+echo ""
+echo "[+] SUCCESS! ${size} OF COMPRESSED RAM ACTIVATED!"
+swapon --show
+`;
+            downloadFile(scriptContent, `download_${size.toLowerCase()}_linux_ram.sh`, 'text/x-shellscript');
+        } else {
+            const batContent = `@echo off
+:: ========================================================
+:: Free RAM Injector for Windows (MMAgent)
+:: Requested RAM: ${size}
+:: ========================================================
+
+net session >nul 2>&1
+if %errorLevel% neq 0 (
+    echo [!] ERROR: Please right-click and "Run as Administrator"!
+    pause
+    exit /b
+)
+
+echo [*] Injecting Windows Memory Compression...
+powershell -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; Enable-MMAgent -mc" >nul 2>&1
+
+echo [*] Starting SysMain engine...
+sc config SysMain start= auto >nul 2>&1
+net start SysMain >nul 2>&1
+
+echo.
+echo [+] SUCCESS! Windows Memory Compression Active!
+powershell -Command "Get-MMAgent | Select-Object MemoryCompression"
+pause
+`;
+            downloadFile(batContent, `download_${size.toLowerCase()}_windows_ram.bat`, 'text/plain');
+        }
+    }
+
+    function downloadFile(content, fileName, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // Run on load
+    detectOS();
+</script>
+
+</body>
+</html>
