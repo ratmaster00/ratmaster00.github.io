@@ -1,587 +1,461 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ratmaster00</title>
-<style>
-@font-face {
-    font-family: 'MS Sans Serif';
-    src: url('https://ratmaster00.github.io/src/MS Sans Serif.ttf') format('truetype');
-    font-weight: normal;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ratmaster00</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
 
-@font-face {
-    font-family: 'MS Sans Serif';
-    src: url('https://ratmaster00.github.io/src/MS Sans Serif.ttf') format('truetype');
-    font-weight: bold;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-:root {
-    --face: #c0c0c0;
-    --light: #ffffff;
-    --shadow: #808080;
-    --dark: #404040;
-    --navy: #000080;
-    --win-font: 'MSSans', 'Microsoft Sans Serif', 'MS Sans Serif', Arial, sans-serif;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; height: 100%; overflow: hidden; }
+        /* Top Bar / Navbar */
+        header {
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
 
-body {
-    font-family: var(--win-font);
-    font-size: 11px;
-    background-color: #008080;
-    display: flex;
-    flex-direction: column;
-    user-select: none;
-}
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-/* ── DESKTOP ── */
-.desktop {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-}
+        .logo {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--text-main);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
 
-/* ── DESKTOP ICONS ── */
-.desktop-icon {
-    position: absolute;
-    display: flex; flex-direction: column; align-items: center;
-    gap: 3px; width: 72px; padding: 4px;
-    cursor: pointer; text-align: center;
-}
-.desktop-icon:hover .icon-label,
-.desktop-icon.selected .icon-label {
-    background: var(--navy); color: #fff;
-}
-.desktop-icon img {
-    width: 32px; height: 32px; image-rendering: pixelated;
-    filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.35));
-}
-.icon-label {
-    font-family: var(--win-font); font-size: 11px;
-    color: #fff; line-height: 1.2; padding: 1px 2px;
-    word-break: break-word;
-    text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
-}
+        .logo span {
+            color: var(--accent);
+        }
 
-/* ── WINDOW ── */
-.win9x-window {
-    position: absolute;
-    top: 14px; left: 50%; transform: translateX(-50%);
-    width: 780px;
-    height: calc(100vh - 60px);
-    max-height: calc(100vh - 60px);
-    background: var(--face);
-    border-top: 2px solid var(--light); border-left: 2px solid var(--light);
-    border-right: 2px solid var(--shadow); border-bottom: 2px solid var(--shadow);
-    display: flex; flex-direction: column; overflow: hidden;
-}
+        .social-links {
+            display: flex;
+            gap: 12px;
+            list-style: none;
+        }
 
-/* ── TITLE BAR ── */
-.title-bar {
-    background: linear-gradient(to right, #000080, #1084d0);
-    height: 22px; display: flex; align-items: center;
-    justify-content: space-between; padding: 2px 3px 2px 4px; flex-shrink: 0;
-}
-.title-bar .title {
-    color: #fff; font-weight: bold; font-size: 11px;
-    display: flex; align-items: center; gap: 5px;
-    font-family: var(--win-font);
-}
-.title-buttons { display: flex; gap: 2px; }
-.title-btn {
-    width: 16px; height: 14px; background: var(--face);
-    border-top: 1px solid var(--light); border-left: 1px solid var(--light);
-    border-right: 1px solid var(--shadow); border-bottom: 1px solid var(--shadow);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 9px; font-weight: bold; color: #000; line-height: 1;
-}
-.title-btn:active {
-    border-top: 1px solid var(--shadow); border-left: 1px solid var(--shadow);
-    border-right: 1px solid var(--light); border-bottom: 1px solid var(--light);
-}
+        .social-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
 
-/* ── MENU BAR ── */
-.menu-bar {
-    background: var(--face); border-bottom: 1px solid var(--shadow);
-    padding: 2px 4px; display: flex; gap: 2px; flex-shrink: 0;
-}
-.menu-item {
-    padding: 2px 6px; font-size: 11px; cursor: pointer; color: #000;
-    font-family: var(--win-font);
-}
-.menu-item:hover { background: var(--navy); color: #fff; }
+        .social-links a:hover {
+            color: var(--text-main);
+            background-color: var(--border);
+        }
 
-/* ── TOOLBAR ── */
-.toolbar {
-    background: var(--face); border-bottom: 1px solid var(--shadow);
-    padding: 3px 4px; display: flex; align-items: center; gap: 4px; flex-shrink: 0;
-}
-.btn {
-    font-family: var(--win-font); font-size: 11px; background: var(--face);
-    border-top: 2px solid var(--light); border-left: 2px solid var(--light);
-    border-right: 2px solid var(--shadow); border-bottom: 2px solid var(--shadow);
-    padding: 2px 6px; cursor: pointer; color: #000;
-    display: flex; align-items: center; gap: 4px; white-space: nowrap;
-}
-.btn:active {
-    border-top: 2px solid var(--shadow); border-left: 2px solid var(--shadow);
-    border-right: 2px solid var(--light); border-bottom: 2px solid var(--light);
-}
-.btn img { width: 16px; height: 16px; image-rendering: pixelated; }
-.toolbar-sep {
-    width: 4px; height: 24px;
-    border-left: 1px solid var(--shadow); border-right: 1px solid var(--light);
-    margin: 0 2px;
-}
+        /* Main Content Container */
+        main {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+            flex: 1;
+        }
 
-/* ── ADDRESS BAR ── */
-.address-bar {
-    background: var(--face); border-bottom: 1px solid var(--shadow);
-    padding: 3px 4px; display: flex; align-items: center; gap: 6px; flex-shrink: 0;
-}
-.address-label { font-size: 11px; color: #000; white-space: nowrap; font-family: var(--win-font); }
-.address-input {
-    flex-grow: 1;
-    border-top: 2px solid var(--shadow); border-left: 2px solid var(--shadow);
-    border-right: 2px solid var(--light); border-bottom: 2px solid var(--light);
-    background: #fff; font-family: var(--win-font); font-size: 11px;
-    padding: 1px 4px; height: 20px; outline: none;
-}
+        /* Profile Header */
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
 
-/* ── CONTENT ── */
-.content { display: flex; flex-grow: 1; min-height: 0; overflow: hidden; }
+        .profile img {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
 
-/* ── NAV PANE ── */
-.nav-pane {
-    width: 160px; background: var(--face);
-    border-right: 2px solid var(--shadow);
-    padding: 6px 4px; overflow-y: auto; font-size: 11px; flex-shrink: 0;
-}
-.nav-section-title {
-    font-weight: bold; font-size: 11px; color: var(--navy);
-    margin: 8px 4px 2px; padding-bottom: 2px;
-    border-bottom: 1px solid var(--shadow); font-family: var(--win-font);
-}
-.nav-item {
-    display: flex; align-items: center; gap: 5px;
-    padding: 2px 4px; cursor: pointer; text-decoration: none;
-    color: #000; font-size: 11px; font-family: var(--win-font);
-}
-.nav-item:hover { background: var(--navy); color: #fff; }
-.nav-item img { width: 16px; height: 16px; image-rendering: pixelated; }
+        .profile img:hover {
+            transform: scale(1.05);
+        }
 
-/* ── FILE VIEW ── */
-.file-view {
-    flex-grow: 1; background: #fff; padding: 8px;
-    overflow-y: auto; min-height: 0;
-    border-top: 2px solid var(--shadow); border-left: 2px solid var(--shadow);
-}
+        .profile-info h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
 
-/* ── PROFILE ── */
-.profile {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 10px; background: var(--face); padding: 8px;
-    border-top: 2px solid var(--shadow); border-left: 2px solid var(--shadow);
-    border-right: 2px solid var(--light); border-bottom: 2px solid var(--light);
-}
-.profile img {
-    width: 56px; height: 56px; object-fit: cover; image-rendering: pixelated;
-    border-top: 2px solid var(--shadow); border-left: 2px solid var(--shadow);
-    border-right: 2px solid var(--light); border-bottom: 2px solid var(--light);
-}
-.profile-info h1 { font-size: 14px; font-weight: bold; margin-bottom: 2px; font-family: var(--win-font); }
-.profile-info p { font-size: 11px; color: #444; font-family: var(--win-font); }
+        .profile-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
 
-/* ── SECTION HEADER ── */
-.section-header {
-    background: linear-gradient(to right, #000080, #1084d0);
-    color: #fff; font-size: 11px; font-weight: bold;
-    padding: 2px 6px; margin-bottom: 6px; margin-top: 4px;
-    display: flex; align-items: center; gap: 5px; font-family: var(--win-font);
-}
-.section-header img { width: 13px; height: 13px; image-rendering: pixelated; }
+        .profile-info a {
+            color: var(--accent);
+            text-decoration: none;
+        }
 
-/* ── PROJECTS ── */
-.projects { display: flex; flex-direction: column; gap: 4px; }
-.project {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--face); padding: 5px 6px;
-    border-top: 2px solid var(--light); border-left: 2px solid var(--light);
-    border-right: 2px solid var(--shadow); border-bottom: 2px solid var(--shadow);
-    cursor: default;
-}
-.project:hover { background: var(--navy); }
-.project:hover .project-info h2 { color: #fff; }
-.project:hover .project-info a { color: #ffffcc; }
-.project img {
-    width: 32px; height: 32px; object-fit: cover; image-rendering: pixelated;
-    flex-shrink: 0;
-    border-top: 1px solid var(--shadow); border-left: 1px solid var(--shadow);
-    border-right: 1px solid var(--light); border-bottom: 1px solid var(--light);
-}
-.project-info h2 { font-size: 11px; font-weight: bold; color: #000; font-family: var(--win-font); }
-.project-info a { font-size: 11px; color: #000080; text-decoration: underline; font-family: var(--win-font); }
+        .profile-info a:hover {
+            text-decoration: underline;
+        }
 
-/* ── STATUS BAR ── */
-.status-bar {
-    background: var(--face); border-top: 1px solid var(--shadow);
-    padding: 2px 6px; display: flex; gap: 4px;
-    font-size: 11px; color: #000; flex-shrink: 0; font-family: var(--win-font);
-}
-.status-pane {
-    border-top: 1px solid var(--shadow); border-left: 1px solid var(--shadow);
-    border-right: 1px solid var(--light); border-bottom: 1px solid var(--light);
-    padding: 1px 8px;
-}
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-/* ══ TASKBAR ══ */
-.taskbar {
-    height: 28px; background: var(--face);
-    border-top: 2px solid var(--light);
-    display: flex; align-items: center; gap: 2px;
-    padding: 2px 3px; flex-shrink: 0;
-    position: relative; z-index: 1000;
-}
+        .section-title span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: normal;
+        }
 
-/* ── START BUTTON ── */
-.start-btn {
-    font-family: var(--win-font); font-size: 11px; font-weight: bold;
-    background: var(--face);
-    border-top: 2px solid var(--light); border-left: 2px solid var(--light);
-    border-right: 2px solid var(--shadow); border-bottom: 2px solid var(--shadow);
-    padding: 2px 8px; cursor: pointer; color: #000;
-    display: flex; align-items: center; gap: 5px;
-    height: 22px; white-space: nowrap;
-}
-.start-btn:active, .start-btn.active {
-    border-top: 2px solid var(--shadow); border-left: 2px solid var(--shadow);
-    border-right: 2px solid var(--light); border-bottom: 2px solid var(--light);
-}
-.start-btn img { width: 16px; height: 16px; image-rendering: pixelated; }
+        /* Tiles Grid */
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
 
-.taskbar-sep {
-    width: 4px; height: 22px;
-    border-left: 1px solid var(--shadow); border-right: 1px solid var(--light);
-    margin: 0 2px;
-}
+        .tile {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+        }
 
-/* ── TASKBAR WINDOW BUTTON ── */
-.taskbar-win-btn {
-    font-family: var(--win-font); font-size: 11px; background: var(--face);
-    border-top: 2px solid var(--shadow); border-left: 2px solid var(--shadow);
-    border-right: 2px solid var(--light); border-bottom: 2px solid var(--light);
-    padding: 2px 6px; cursor: pointer; color: #000;
-    display: flex; align-items: center; gap: 4px;
-    height: 22px; min-width: 120px; max-width: 180px;
-    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-}
-.taskbar-win-btn img { width: 14px; height: 14px; image-rendering: pixelated; flex-shrink: 0; }
+        .tile:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
 
-/* ── SYSTEM TRAY ── */
-.system-tray {
-    margin-left: auto;
-    border-top: 1px solid var(--shadow); border-left: 1px solid var(--shadow);
-    border-right: 1px solid var(--light); border-bottom: 1px solid var(--light);
-    padding: 2px 8px; display: flex; align-items: center; gap: 6px;
-    height: 22px; background: var(--face);
-}
-.tray-clock { font-family: var(--win-font); font-size: 11px; color: #000; white-space: nowrap; }
-.tray-icon { width: 16px; height: 16px; image-rendering: pixelated; }
+        .tile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-/* ══ START MENU ══ */
-.start-menu {
-    position: absolute;
-    bottom: 28px; left: 0;
-    width: 210px; background: var(--face);
-    border-top: 2px solid var(--light); border-left: 2px solid var(--light);
-    border-right: 2px solid var(--shadow); border-bottom: 2px solid var(--shadow);
-    display: none; flex-direction: row; z-index: 2000;
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
-}
-.start-menu.open { display: flex; }
+        .tile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            background-color: var(--bg-color);
+            flex-shrink: 0;
+        }
 
-.start-menu-banner {
-    width: 22px; background: var(--navy);
-    display: flex; align-items: flex-end; justify-content: center;
-    padding-bottom: 6px; flex-shrink: 0;
-}
-.start-menu-banner span {
-    color: #fff; font-weight: bold; font-size: 15px;
-    writing-mode: vertical-rl; transform: rotate(180deg);
-    letter-spacing: 1px; font-family: var(--win-font);
-}
-.start-menu-banner span em { color: #c0c0c0; font-style: normal; font-weight: normal; }
+        .tile-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
 
-.start-menu-items { flex: 1; padding: 4px 0; display: flex; flex-direction: column; }
+        .tile-action {
+            margin-top: auto;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-.sm-item {
-    display: flex; align-items: center; gap: 8px;
-    padding: 4px 10px 4px 6px; cursor: pointer;
-    color: #000; font-size: 11px; font-family: var(--win-font); text-decoration: none;
-}
-.sm-item:hover { background: var(--navy); color: #fff; }
-.sm-item img { width: 24px; height: 24px; image-rendering: pixelated; flex-shrink: 0; }
-.sm-item strong { font-size: 11px; font-weight: bold; font-family: var(--win-font); }
-.sm-item:hover .sm-arrow { color: #fff; }
-.sm-arrow { margin-left: auto; font-size: 9px; color: #000; }
-.sm-sep {
-    border-top: 1px solid var(--shadow); border-bottom: 1px solid var(--light);
-    margin: 3px 0;
-}
-</style>
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 600px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .profile {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- ══ DESKTOP AREA ══ -->
-<div class="desktop" id="desktop" onclick="closeStartMenu(event)">
+    <!-- Top Bar with Social Links -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">ratmaster<span>00</span></a>
+            <ul class="social-links">
+                <li><a href="https://github.com/ratmaster00" target="_blank">GitHub</a></li>
+                <li><a href="javascript:alert('Discord: .regedit.exe');">Discord</a></li>
+                <li><a href="javascript:alert('YouTube: InviqGD');">YouTube</a></li>
+                <li><a href="javascript:alert('Geometry Dash: inviq');">GD Profile</a></li>
+            </ul>
+        </div>
+    </header>
 
-    <!-- DESKTOP ICONS -->
-    <div class="desktop-icon" style="top:14px;left:14px;" ondblclick="openWindow()">
-        <img src="https://win98icons.alexmeub.com/icons/png/computer-2.png" alt="My Computer">
-        <span class="icon-label">My Computer</span>
-    </div>
-    <div class="desktop-icon" style="top:100px;left:14px;">
-        <img src="https://win98icons.alexmeub.com/icons/png/recycle_bin_empty-0.png" alt="Recycle Bin">
-        <span class="icon-label">Recycle Bin</span>
-    </div>
-    <div class="desktop-icon" style="top:186px;left:14px;">
-        <img src="https://win98icons.alexmeub.com/icons/png/network_normal_two_pcs-5.png" alt="Network Neighborhood">
-        <span class="icon-label">Network Neighborhood</span>
-    </div>
-    <div class="desktop-icon" style="top:14px;left:94px;" ondblclick="openWindow()">
-        <img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-0.png" alt="ratmaster00">
-        <span class="icon-label">ratmaster00</span>
-    </div>
-    <div class="desktop-icon" style="top:100px;left:94px;">
-        <img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-0.png" alt="My Documents">
-        <span class="icon-label">My Documents</span>
-    </div>
-    <div class="desktop-icon" style="top:186px;left:94px;">
-        <img src="https://win98icons.alexmeub.com/icons/png/msie2-5.png" alt="Internet Explorer">
-        <span class="icon-label">Internet Explorer</span>
-    </div>
-
-    <!-- ══ EXPLORER WINDOW ══ -->
-    <div class="win9x-window" id="mainWindow">
-
-        <div class="title-bar">
-            <div class="title">
-                <img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-0.png" style="width:14px;height:14px;image-rendering:pixelated;" alt="">
-                Exploring - ratmaster00's Desktop
+    <main>
+        <!-- Profile Header -->
+        <section class="profile">
+            <img src="https://ratmaster00.github.io/src/pfp.png" 
+                 alt="Profile Picture" 
+                 onerror="this.src='https://win98icons.alexmeub.com/icons/png/users-2.png'" 
+                 onclick="playSound(); const msgs=['*boop* uwu','h-hey!! that\'s my nose!!','boop detected. initiating cuddle protocol.','*visor glows blue* ...boop received.','unauthorized boop! ...it was authorized.']; alert(msgs[Math.floor(Math.random()*msgs.length)]);">
+            <div class="profile-info">
+                <h1>ratmaster00</h1>
+                <p>Hobbyist coder making fun web apps, utilities, and projects. Plays Geometry Dash!</p>
             </div>
-            <div class="title-buttons">
-                <div class="title-btn" title="Minimize">_</div>
-                <div class="title-btn" title="Maximize">☐</div>
-                <div class="title-btn" style="color:red;" title="Close" onclick="window.close()">✕</div>
-            </div>
+        </section>
+
+        <!-- Project Tiles -->
+        <div class="section-title">
+            Projects
+            <span id="projectCount">0 items</span>
         </div>
 
-        <div class="menu-bar">
-            <span class="menu-item"><u>F</u>ile</span>
-            <span class="menu-item"><u>E</u>dit</span>
-            <span class="menu-item"><u>V</u>iew</span>
-            <span class="menu-item"><u>G</u>o</span>
-            <span class="menu-item">Fa<u>v</u>orites</span>
-            <span class="menu-item"><u>H</u>elp</span>
-        </div>
-
-        <div class="toolbar">
-            <button class="btn"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-5.png" alt=""> Back</button>
-            <button class="btn"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-5.png" alt="" style="transform:scaleX(-1)"> Forward</button>
-            <div class="toolbar-sep"></div>
-            <button class="btn"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-5.png" alt=""> Up</button>
-            <div class="toolbar-sep"></div>
-            <button class="btn"><img src="https://win98icons.alexmeub.com/icons/png/search_file-0.png" alt=""> Search</button>
-            <button class="btn"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-3.png" alt=""> Folders</button>
-            <div class="toolbar-sep"></div>
-            <button class="btn"><img src="https://win98icons.alexmeub.com/icons/png/directory_explorer-2.png" alt=""> Views ▾</button>
-        </div>
-
-        <div class="address-bar">
-            <span class="address-label">Address</span>
-            <input type="text" class="address-input" value="C:\Desktop\ratmaster00" readonly>
-            <button class="btn" style="min-width:36px;">Go</button>
-        </div>
-
-        <div class="content">
-            <div class="nav-pane">
-                <div class="nav-section-title">Favorites</div>
-                <a href="#profile" class="nav-item"><img src="https://win98icons.alexmeub.com/icons/png/desktop-4.png" alt=""> Desktop</a>
-                <a href="#" class="nav-item"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-5.png" alt=""> Downloads</a>
-                <a href="#" class="nav-item"><img src="https://win98icons.alexmeub.com/icons/png/clock-0.png" alt=""> Recent Places</a>
-
-                <div class="nav-section-title">Profiles</div>
-                <a href="javascript:;" class="nav-item"><img src="https://win98icons.alexmeub.com/icons/png/document-0.png" alt=""> Discord: .regedit.exe</a>
-                <a href="javascript:;" class="nav-item"><img src="https://win98icons.alexmeub.com/icons/png/joystick-0.png" alt=""> GD: inviq</a>
-                <a href="javascript:;" class="nav-item"><img src="https://win98icons.alexmeub.com/icons/png/media_player-0.png" alt=""> YT: InviqGD</a>
-                <a href="javascript:;" class="nav-item"><img src="https://win98icons.alexmeub.com/icons/png/laptop_small-0.png" alt=""> Github: ratmaster00</a>
-
-                <div class="nav-section-title">System</div>
-                <a href="https://github.com/ratmaster00" target="_blank" class="nav-item"><img src="https://win98icons.alexmeub.com/icons/png/computer-2.png" alt=""> My Computer</a>
-                <a href="https://ratmaster00.github.io" target="_blank" class="nav-item"><img src="https://win98icons.alexmeub.com/icons/png/network_normal_two_pcs-0.png" alt=""> Network</a>
-                <a href="#" class="nav-item"><img src="https://win98icons.alexmeub.com/icons/png/recycle_bin_full-0.png" alt=""> Recycle Bin</a>
-            </div>
-
-            <div class="file-view" id="fileView">
-                <div id="profile" class="profile">
-                    <img src="https://ratmaster00.github.io/src/pfp.png" alt="Profile Picture" oncontextmenu="return false;" onerror="this.src='https://win98icons.alexmeub.com/icons/png/users-2.png'" onclick="playSound();const msgs=['*boop* uwu','h-hey!! that\'s my nose!!','boop detected. initiating cuddle protocol.','*visor glows blue* ...boop received.','unauthorized boop! ...it was authorized.'];alert(msgs[Math.floor(Math.random()*msgs.length)]);" style="cursor:pointer;">
-                    <div class="profile-info">
-                        <h1>ratmaster00</h1>
-                        <p>Just a hobbyist coder making cool projects. Now plays GD! Windows Icons by <a href="https://win98icons.alexmeub.com/" target="_blank">Alex Meub</a>.</p>
-                    </div>
+        <div class="tiles-grid" id="projectGrid">
+            <a href="https://ratmaster00.github.io/gosigconv" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/rat.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Ratta Converter</div>
                 </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
 
-                <div class="section-header">
-                    <img src="https://win98icons.alexmeub.com/icons/png/directory_open_cool-0.png" alt="">
-                    <span id="sectionLabel">Projects</span>
+            <a href="https://ratmaster00.github.io/nocookies" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/nock.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">No Cookies</div>
                 </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
 
-                <div class="projects" id="projectList">
-                    <div class="project"><img src="https://ratmaster00.github.io/src/rat.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Ratta Converter</h2><a href="https://ratmaster00.github.io/gosigconv">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/nock.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>No Cookies</h2><a href="https://ratmaster00.github.io/nocookies">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/tvs.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Tetris Volume Slider</h2><a href="https://ratmaster00.github.io/tetris-volume-slider">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/wanted.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Wanted (SM64DS recreation)</h2><a href="https://ratmaster00.github.io/wanted">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/bc.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Brainrot Clicker</h2><a href="https://tinyurl.com/brainclick">Download</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/label.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Label Generator (Polish)</h2><a href="https://ratmaster00.github.io/labels">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/gta.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>GTA in Python (for memes)</h2><a href="https://github.com/ratmaster00/gtainpython">View on GitHub</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/vtilt.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Volume Slider Tilter</h2><a href="https://ratmaster00.github.io/voltilt">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/osb.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>OpenScoreBoard</h2><a href="https://ratmaster00.github.io/openscore">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/login.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Horrible UI</h2><a href="https://ratmaster00.github.io/badui">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/gpu.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Download free GPU 2025</h2><a href="https://ratmaster00.github.io/gpu">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/doggie.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Doggiefier</h2><a href="https://ratmaster00.github.io/doggiefier">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/rampay.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>RAMpay</h2><a href="https://ratmaster00.github.io/rampay">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/src/intenet.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Internet Test</h2><a href="https://ratmaster00.github.io/internettest">Visit Project</a></div></div>
-                    <div class="project"><img src="https://ratmaster00.github.io/papaj/image.jpeg" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Papaj</h2><a href="https://ratmaster00.github.io/papaj">Visit Papaj (or he'll visit you)</a></div></div>
-                    <div class="project"><img src="https://tech.morele.net/wp-content/uploads/2026/02/privacy-display-w-samsung.webp" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Privacy Display Demo</h2><a href="https://ratmaster00.github.io/privdisp">Visit Demo</a></div></div>
-                    <div class="project"><img src="https://play-lh.googleusercontent.com/gXr2tsqc1qPzMRHEXhGcbuYcsy4_DAmgzYqMYYQ0h0LhXWWXaHffBh6JkbcIc04pqA=w240-h480-rw" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>DryFlix</h2><a href="https://ratmaster00.github.io/dryflix">Watch it Dry</a></div></div>
-                    <div class="project"><img src="https://www.kwantowo.pl/wp-content/uploads/2017/04/einstein-tesla.jpg" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Extreme Sudoku</h2><a href="https://ratmaster00.github.io/ultra-sudoku">Try it! </a></div></div>
-                    <div class="project"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsNz-aBGMHHmpVJnH_5fOrlBzG9iphJpR1zA&s" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Visual Brainfuck</h2><a href="https://ratmaster00.github.io/brainfuck">lose your sanity! </a></div></div>
-                    <div class="project"><img src="https://wedo.pl/wp-content/uploads/2025/07/ai-co-to.webp" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>AI Watermark Adder</h2><a href="https://ratmaster00.github.io/watermark">Waste Water!</a></div></div>
-                    <div class="project"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThJPDJXnmPq0utTO5xThPcQLhCxVQSEGC7ZQRYmTnCzQ&s=10" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Teto Calculator</h2><a href="https://ratmaster00.github.io/tetocalc">Calculate!</a></div></div>
-                    <div class="project"><img src="https://a.allegroimg.com/original/1165d6/8594d99c492d9b02b29aeb71b75d/DDR4-RAM-XMP2-0-3600-MHz-PC4-28800U-CL16-20-20-38-1-35-V-Modul-6Q-Producent-Zzvf" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" alt=""><div class="project-info"><h2>Download Free RAM 2026</h2><a href="https://ratmaster00.github.io/ramdownload">Download</a></div></div>
+            <a href="https://ratmaster00.github.io/tetris-volume-slider" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/tvs.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Tetris Volume Slider</div>
                 </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/wanted" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/wanted.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Wanted (SM64DS Recreation)</div>
                 </div>
-            </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://tinyurl.com/brainclick" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/bc.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Brainrot Clicker</div>
+                </div>
+                <div class="tile-action">Download &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/labels" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/label.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Label Generator (Polish)</div>
+                </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://github.com/ratmaster00/gtainpython" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/gta.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">GTA in Python</div>
+                </div>
+                <div class="tile-action">View on GitHub &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/voltilt" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/vtilt.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Volume Slider Tilter</div>
+                </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/openscore" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/osb.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">OpenScoreBoard</div>
+                </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/badui" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/login.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Horrible UI</div>
+                </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/gpu" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/gpu.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Download Free GPU</div>
+                </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/doggiefier" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/doggie.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Doggiefier</div>
+                </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/rampay" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/rampay.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">RAMpay</div>
+                </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/internettest" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/src/intenet.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Internet Test</div>
+                </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/papaj" class="tile">
+                <div class="tile-header">
+                    <img src="https://ratmaster00.github.io/papaj/image.jpeg" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Papaj</div>
+                </div>
+                <div class="tile-action">Visit Papaj &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/privdisp" class="tile">
+                <div class="tile-header">
+                    <img src="https://tech.morele.net/wp-content/uploads/2026/02/privacy-display-w-samsung.webp" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Privacy Display Demo</div>
+                </div>
+                <div class="tile-action">Visit Demo &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/dryflix" class="tile">
+                <div class="tile-header">
+                    <img src="https://play-lh.googleusercontent.com/gXr2tsqc1qPzMRHEXhGcbuYcsy4_DAmgzYqMYYQ0h0LhXWWXaHffBh6JkbcIc04pqA=w240-h480-rw" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">DryFlix</div>
+                </div>
+                <div class="tile-action">Watch &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/ultra-sudoku" class="tile">
+                <div class="tile-header">
+                    <img src="https://www.kwantowo.pl/wp-content/uploads/2017/04/einstein-tesla.jpg" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Extreme Sudoku</div>
+                </div>
+                <div class="tile-action">Try it &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/brainfuck" class="tile">
+                <div class="tile-header">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsNz-aBGMHHmpVJnH_5fOrlBzG9iphJpR1zA&s" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Visual Brainfuck</div>
+                </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/watermark" class="tile">
+                <div class="tile-header">
+                    <img src="https://wedo.pl/wp-content/uploads/2025/07/ai-co-to.webp" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">AI Watermark Adder</div>
+                </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/tetocalc" class="tile">
+                <div class="tile-header">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThJPDJXnmPq0utTO5xThPcQLhCxVQSEGC7ZQRYmTnCzQ&s=10" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Teto Calculator</div>
+                </div>
+                <div class="tile-action">Open Project &rarr;</div>
+            </a>
+
+            <a href="https://ratmaster00.github.io/ramdownload" class="tile">
+                <div class="tile-header">
+                    <img src="https://a.allegroimg.com/original/1165d6/8594d99c492d9b02b29aeb71b75d/DDR4-RAM-XMP2-0-3600-MHz-PC4-28800U-CL16-20-20-38-1-35-V-Modul-6Q-Producent-Zzvf" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-icon" alt="">
+                    <div class="tile-title">Download Free RAM</div>
+                </div>
+                <div class="tile-action">Download &rarr;</div>
+            </a>
         </div>
+    </main>
 
-        <div class="status-bar">
-            <div class="status-pane" id="objectCount">17 object(s)</div>
-            <div class="status-pane" style="flex:1">ratmaster00's Desktop</div>
-            <div class="status-pane" style="flex:0;min-width:110px;">My Computer</div>
-        </div>
-    </div>
-</div>
+    <footer>
+        &copy; ratmaster00
+    </footer>
 
-<!-- ══ TASKBAR ══ -->
-<div class="taskbar" id="taskbar">
+    <script>
+        function playSound() {
+            new Audio('https://ratmaster00.github.io/src/dialup.mp3').play();
+        }
 
-    <button class="start-btn" id="startBtn" onclick="toggleStartMenu(event)">
-        <img src="https://win98icons.alexmeub.com/icons/png/windows-0.png" alt="">
-        <strong>Start</strong>
-    </button>
-
-    <div class="taskbar-sep"></div>
-
-    <button class="taskbar-win-btn">
-        <img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-0.png" alt="">
-        Exploring - ratmaster00
-    </button>
-
-    <div class="system-tray">
-        <img src="https://win98icons.alexmeub.com/icons/png/loudspeaker_rays-0.png" alt="Volume" class="tray-icon">
-        <img src="https://win98icons.alexmeub.com/icons/png/network_normal_two_pcs-0.png" alt="Network" class="tray-icon">
-        <span class="tray-clock" id="clock">00:00</span>
-    </div>
-
-    <!-- START MENU -->
-    <div class="start-menu" id="startMenu">
-        <div class="start-menu-banner">
-            <span><em>Windows</em>98</span>
-        </div>
-        <div class="start-menu-items">
-            <a href="javascript:;" class="sm-item" onclick="closeStartMenu()">
-                <img src="https://win98icons.alexmeub.com/icons/png/package-1.png" alt="">
-                <strong>Programs</strong>
-                <span class="sm-arrow">▶</span>
-            </a>
-            <a href="javascript:;" class="sm-item" onclick="closeStartMenu()">
-                <img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-0.png" alt="">
-                <strong>Documents</strong>
-                <span class="sm-arrow">▶</span>
-            </a>
-            <a href="javascript:;" class="sm-item" onclick="closeStartMenu()">
-                <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-0.png" alt="">
-                <strong>Settings</strong>
-                <span class="sm-arrow">▶</span>
-            </a>
-            <a href="javascript:;" class="sm-item" onclick="closeStartMenu()">
-                <img src="https://win98icons.alexmeub.com/icons/png/search_file-0.png" alt="">
-                <strong>Find</strong>
-                <span class="sm-arrow">▶</span>
-            </a>
-            <a href="javascript:;" class="sm-item" onclick="closeStartMenu()">
-                <img src="https://win98icons.alexmeub.com/icons/png/help_book_big-0.png" alt="">
-                <strong>Help</strong>
-            </a>
-            <a href="javascript:;" class="sm-item" onclick="closeStartMenu()">
-                <img src="https://win98icons.alexmeub.com/icons/png/console_prompt-0.png" alt="">
-                <strong>Run…</strong>
-            </a>
-            <div class="sm-sep"></div>
-            <a href="javascript:;" class="sm-item" onclick="closeStartMenu()">
-                <img src="https://win98icons.alexmeub.com/icons/png/shut_down_normal-0.png" alt="">
-                <strong>Shut Down…</strong>
-            </a>
-        </div>
-    </div>
-
-</div>
-
-<script>
-function playSound() {
-  new Audio('https://ratmaster00.github.io/src/dialup.mp3').play();
-}
-function updateObjectCount() {
-    const n = document.querySelectorAll('#projectList .project').length;
-    document.getElementById('objectCount').textContent = n + ' object(s)';
-    document.getElementById('sectionLabel').textContent = 'Projects (' + n + ' objects)';
-}
-
-function updateClock() {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    document.getElementById('clock').textContent = h + ':' + m;
-}
-
-function toggleStartMenu(e) {
-    e.stopPropagation();
-    const menu = document.getElementById('startMenu');
-    const btn = document.getElementById('startBtn');
-    const open = menu.classList.toggle('open');
-    btn.classList.toggle('active', open);
-}
-
-function closeStartMenu(e) {
-    document.getElementById('startMenu').classList.remove('open');
-    document.getElementById('startBtn').classList.remove('active');
-}
-
-function openWindow() {
-    document.getElementById('mainWindow').style.display = 'flex';
-}
-
-document.addEventListener('click', function(e) {
-    if (!document.getElementById('taskbar').contains(e.target)) closeStartMenu();
-});
-
-updateObjectCount();
-updateClock();
-setInterval(updateClock, 10000);
-</script>
+        // Count projects dynamically
+        const count = document.querySelectorAll('#projectGrid .tile').length;
+        document.getElementById('projectCount').textContent = count + ' projects';
+    </script>
 </body>
 </html>
