@@ -1,1 +1,112 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tile Snippet Generator</title>
+<style>
+:root{
+  --bg:#0f172a;--card:#1e293b;--border:#334155;--accent:#38bdf8;--text:#f8fafc;--muted:#94a3b8;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;
+  padding:env(safe-area-inset-top,0) 20px env(safe-area-inset-bottom,0);
+}
+main{max-width:640px;margin:0 auto;padding:32px 0 60px}
+h1{font-size:1.3rem;margin-bottom:4px}
+p.sub{color:var(--muted);font-size:0.9rem;margin-bottom:24px}
+label{display:block;font-size:0.85rem;font-weight:600;margin:16px 0 6px}
+input{
+  width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);
+  background:var(--card);color:var(--text);font-size:0.9rem;
+}
+input:focus{outline:none;border-color:var(--accent)}
+textarea{
+  width:100%;min-height:180px;margin-top:20px;padding:14px;border-radius:8px;
+  border:1px solid var(--border);background:var(--card);color:var(--text);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:0.8rem;
+  white-space:pre;resize:vertical;
+}
+button{
+  margin-top:12px;padding:10px 18px;border:none;border-radius:8px;
+  background:var(--accent);color:#0f172a;font-weight:700;font-size:0.9rem;
+  cursor:pointer;
+}
+button:active{transform:scale(0.98)}
+.copied{color:var(--accent);font-size:0.85rem;margin-left:10px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Tile Snippet Generator</h1>
+  <p class="sub">Fill in the fields, get a ready-to-paste tile.</p>
+
+  <label for="link">Project link</label>
+  <input id="link" placeholder="https://ratmaster00.github.io/example">
+
+  <label for="img">Thumbnail image link</label>
+  <input id="img" placeholder="https://ratmaster00.github.io/src/example.png">
+
+  <label for="title">Title</label>
+  <input id="title" placeholder="Example Project">
+
+  <label for="action">Action label</label>
+  <input id="action" placeholder="Open Project" value="Open Project">
+
+  <textarea id="output" readonly></textarea>
+  <div>
+    <button id="copyBtn">Copy snippet</button>
+    <span class="copied" id="copiedMsg" style="display:none">Copied!</span>
+  </div>
+</main>
+
+<script>
+function escapeAttr(s){
+  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function build(){
+  const link = document.getElementById('link').value.trim() || '[link]';
+  const img = document.getElementById('img').value.trim() || '[image link]';
+  const title = document.getElementById('title').value.trim() || '[title]';
+  const action = document.getElementById('action').value.trim() || '[action]';
+
+  const snippet =
+`<a href="${escapeAttr(link)}" class="tile">
+    <div class="tile-thumb-wrap">
+        <img src="${escapeAttr(img)}" onerror="this.src='https://win98icons.alexmeub.com/icons/png/executable-0.png'" class="tile-thumb" alt="">
+    </div>
+    <div class="tile-info">
+        <img src="https://ratmaster00.github.io/src/pfp.png" onerror="this.src='https://win98icons.alexmeub.com/icons/png/users-2.png'" class="tile-icon" alt="">
+        <div class="tile-text">
+            <div class="tile-title">${escapeAttr(title)}</div>
+            <div class="tile-action">${escapeAttr(action)} &rarr;</div>
+        </div>
+    </div>
+</a>`;
+  document.getElementById('output').value = snippet;
+}
+
+['link','img','title','action'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', build);
+});
+build();
+
+document.getElementById('copyBtn').addEventListener('click', async ()=>{
+  const out = document.getElementById('output');
+  out.select();
+  try{
+    await navigator.clipboard.writeText(out.value);
+  }catch(e){
+    document.execCommand('copy');
+  }
+  const msg = document.getElementById('copiedMsg');
+  msg.style.display='inline';
+  setTimeout(()=>msg.style.display='none', 1500);
+});
+</script>
+</body>
+</html>
