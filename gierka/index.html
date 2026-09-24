@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gierka Komputerowa</title>
+<style>
+  :root {
+    --ui-bg: rgba(0,0,0,0.55);
+    --ui-text: #ffffff;
+  }
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #111;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+  }
+  #game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('https://d-pa.ppstatic.pl/frames/pa-def/12/6a/il20250722_924433809_medium.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+  #score {
+    position: absolute;
+    top: env(safe-area-inset-top, 10px);
+    left: 10px;
+    padding: 8px 14px;
+    background: var(--ui-bg);
+    color: var(--ui-text);
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 8px;
+    z-index: 10;
+  }
+  #player {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background-image: url('https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcRMED-3nEuSWNrj-XPSh-eOaQXDsraqA7RVOYclOT9KZ3YiQUsAtOU1eMXY5dnH4n46UT4vvQkpxERhiYc');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 5;
+  }
+  .falling {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-image: url('https://madax.net.pl/hpeciai/3b38dce3987c42ca5784b77fccb1484f/pol_pm_Bloczek-betonowy-12x24x38-48_1.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 4;
+  }
+  .golden {
+    filter: sepia(1) saturate(6) hue-rotate(-10deg) brightness(1.15) drop-shadow(0 0 10px gold);
+  }
+  #hint {
+    position: absolute;
+    bottom: env(safe-area-inset-bottom, 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 12px;
+    background: var(--ui-bg);
+    color: var(--ui-text);
+    font-size: 14px;
+    border-radius: 8px;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+<div id="game">
+  <div id="score">Bloczki betonowe: 0</div>
+  <div id="player"></div>
+</div>
+
+<script>
+(function() {
+  const game = document.getElementById('game');
+  const player = document.getElementById('player');
+  const scoreEl = document.getElementById('score');
+
+  let score = 0;
+  const playerSize = 150;
+  let gw = window.innerWidth;
+  let gh = window.innerHeight;
+
+  let px = gw / 2 - playerSize / 2;
+  let py = gh - playerSize - 20;
+
+  const speed = 6;
+  const keys = {};
+
+  window.addEventListener('keydown', (e) => {
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) {
+      keys[e.key] = true;
+      e.preventDefault();
+    }
+  });
+  window.addEventListener('keyup', (e) => {
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) {
+      keys[e.key] = false;
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    gw = window.innerWidth;
+    gh = window.innerHeight;
+  });
+
+  function updatePlayer() {
+    if (keys['ArrowLeft']) px -= speed;
+    if (keys['ArrowRight']) px += speed;
+    if (keys['ArrowUp']) py -= speed;
+    if (keys['ArrowDown']) py += speed;
+
+    px = Math.max(0, Math.min(gw - playerSize, px));
+    py = Math.max(0, Math.min(gh - playerSize, py));
+
+    player.style.left = px + 'px';
+    player.style.top = py + 'px';
+  }
+
+  const fallers = [];
+  const fallSize = 100;
+
+  function spawnFaller() {
+    const el = document.createElement('div');
+    const isGolden = Math.random() < 0.12;
+    el.className = isGolden ? 'falling golden' : 'falling';
+    const x = Math.random() * (gw - fallSize);
+    el.style.left = x + 'px';
+    el.style.top = '-' + fallSize + 'px';
+    game.appendChild(el);
+    fallers.push({
+      el: el,
+      x: x,
+      y: -fallSize,
+      speed: 2 + Math.random() * 3,
+      golden: isGolden
+    });
+  }
+
+  function rectsOverlap(ax, ay, aw, ah, bx, by, bw, bh) {
+    return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
+  }
+
+  function updateFallers() {
+    for (let i = fallers.length - 1; i >= 0; i--) {
+      const f = fallers[i];
+      f.y += f.speed;
+      f.el.style.top = f.y + 'px';
+
+      if (rectsOverlap(px, py, playerSize, playerSize, f.x, f.y, fallSize, fallSize)) {
+        score += f.golden ? 10 : 1;
+        scoreEl.textContent = 'Bloczki betonowe: ' + score;
+        f.el.remove();
+        fallers.splice(i, 1);
+        continue;
+      }
+
+      if (f.y > gh) {
+        f.el.remove();
+        fallers.splice(i, 1);
+      }
+    }
+  }
+
+  let spawnTimer = 0;
+  const spawnInterval = 800;
+  let lastTime = performance.now();
+
+  function loop(now) {
+    const dt = now - lastTime;
+    lastTime = now;
+
+    spawnTimer += dt;
+    if (spawnTimer > spawnInterval) {
+      spawnTimer = 0;
+      spawnFaller();
+    }
+
+    updatePlayer();
+    updateFallers();
+
+    requestAnimationFrame(loop);
+  }
+
+  player.style.left = px + 'px';
+  player.style.top = py + 'px';
+
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
